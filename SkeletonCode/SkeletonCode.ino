@@ -34,8 +34,8 @@ boolean bt_MotorsEnabled = true;
 //pins, pin numbers will change once we know everything that needs a pin
 const int ci_LeftUltraPing = 2;   //input plug
 const int ci_LeftUltraData = 3;   //output plug
-const int ci_RightUltraPing ;
-const int ci_RightUltraData; //can they have the same input pin since we are only reading one at a time?? i wanna say yes
+const int ci_RightUltraPing =4;
+const int ci_RightUltraData=3; //can they have the same input pin since we are only reading one at a time?? i wanna say yes
 const int ci_CharlieplexLED1 = 4; //will we use these? if so we dont have enough pins i think...
 const int ci_CharlieplexLED2 = 5;
 const int ci_CharlieplexLED3 = 6;
@@ -106,7 +106,7 @@ void setup()
   pinMode(ci_LeftMotor, OUTPUT);
   leftMotor.attach(ci_LeftMotor);
   pinMode(ci_RightMotor, OUTPUT);
-  rightMotor.attach(ci_RighMotor);
+  rightMotor.attach(ci_RightMotor);
 
   // set up arm motors
   pinMode(ci_ClawMotor, OUTPUT);
@@ -133,7 +133,7 @@ void loop()
   // 3 = Press mode button three times to enter.
   // 4 = Press mode button four times to enter.
 
-  switch(ui_Robot_State_Index) //mode to operate in
+  switch(modeIndex) //mode to operate in
   {
   case 0:    //Robot stopped
     {
@@ -213,7 +213,7 @@ void loop()
 //measure distance to target using ultrasonic sensor
 void Ping(char side)
 {
-  if(side==L){
+  if(side=='L'){
     //Ping Ultrasonic
     //Send the Ultrasonic Range Finder a 10 microsecond pulse per tech spec
     digitalWrite(ci_LeftUltraPing, HIGH);
@@ -223,14 +223,13 @@ void Ping(char side)
     //time that it takes from when the Pin goes HIGH until it goes LOW 
     leftEchoTime = pulseIn(ci_LeftUltraData, HIGH, 10000);
   }
-  else if(side==R){
+  else if(side=='R'){
     digitalWrite(ci_RightUltraPing, HIGH);
     delayMicroseconds(10);
     digitalWrite(ci_RightUltraPing, LOW);
     rightEchoTime = pulseIn(ci_RightUltraData, HIGH, 10000);
   }
-
-
+  
   // Print Sensor Readings
 #ifdef DEBUG_ULTRASONIC
   if(side==L) echoTime = leftEchoTime;
@@ -246,6 +245,7 @@ void Ping(char side)
   Serial.println(echoTime/58); //divide time by 58 to get distance in cm 
 #endif
 }
+
 
 
 
