@@ -3,8 +3,6 @@
  
  */
 
-
-
 #include <Servo.h>
 #include <uSTimer2.h>
 #include <CharliePlexM.h>
@@ -12,16 +10,24 @@
 #include <I2CEncoder.h>
 
 
+//*******uncoment to debug******
+//#define DEBUG_ULTRASONIC
+
+
+
+
 Servo frontMotor;
 Servo backMotor;
 Servo leftMotor;
 Servo rightMotor;
 Servo clawMotor;
+//add x and y tower motors
 
 I2CEncoder encoder_FrontMotor;
 I2CEncoder encoder_BackMoror;
 I2CEncoder encoder_LeftMotor;
 I2CEncoder encoder_RightMotor;
+//possible have to add more encoders depending on which motors we use for x and y axis
 
 boolean bt_MotorsEnabled = true;
 
@@ -29,7 +35,7 @@ boolean bt_MotorsEnabled = true;
 const int ci_LeftUltraPing = 2;   //input plug
 const int ci_LeftUltraData = 3;   //output plug
 const int ci_RightUltraPing ;
-const int ci_RightUltraData; //can they have the same input pin since we are only reading one at a time??
+const int ci_RightUltraData; //can they have the same input pin since we are only reading one at a time?? i wanna say yes
 const int ci_CharlieplexLED1 = 4; //will we use these? if so we dont have enough pins i think...
 const int ci_CharlieplexLED2 = 5;
 const int ci_CharlieplexLED3 = 6;
@@ -40,7 +46,8 @@ const int ci_BackMotor = 9;
 const int ci_LeftMotor = 10;
 const int ci_RightMotor = 11;
 const int ci_ClawMotor = 12;
-const int ci_MotorEnableSwitch = 13;//dont really wanna use this pin if possible i think 
+const int ci_MotorEnableSwitch = 13;//dont really wanna use this pin if possible i think but thinking about it more it might be 
+//good to to have this switch on this pin because pin 13 is linkied to the and on board led that could should when motors are enabled or not
 
 
 const int ci_I2C_SDA = A4;         // I2C data = white
@@ -59,21 +66,30 @@ unsigned int rightMotorSpeed;
 unsigned long frontMotorPos;
 unsigned long backMotorPos;
 unsigned long leftMotorPos;
-unsigned long rightMotorPos; 
+unsigned long rightMotorPos;
+unsigned long clawMotorPos;
 
 unsigned long echoTime;
 unsigned long leftEchoTime;
 unsigned long rightEchoTime;
 
 unsigned int modeIndex=0;
-unsigned int stageIndex;
+unsigned int stageIndex=0;
 
-
+boolean bt_Heartbeat = true;
+boolean bt_3_S_Time_Up = false;
+boolean bt_Do_Once = false;
 
 void setup()
 {
   Wire.begin();
   Serial.begin(9600);
+
+
+  //if we wanna use charliplex
+  // 2pin=2LED, 3p=6, 4p=12, not sure if need all 4 pins to use button
+  //CharliePlexM::setBtn(ci_CharlieplexLED1,ci_CharlieplexLED2,
+  //                      ci_CharlieplexLED3,ci_CharlieplexLED4,ci_ModeButton);
 
 
   //set up ultrasonic
@@ -95,7 +111,7 @@ void setup()
   // set up arm motors
   pinMode(ci_ClawMotor, OUTPUT);
   clawMotor.attach(ci_ClawMotor);
-  clawMotor.write(ci_ClawOpen);
+  clawMotor.write(ci_ClawOpen); //opens claw off start because why not? first thing we'll grab is the waterbottlee right??
 
   // set up motor enable switch
   pinMode(ci_MotorEnableSwitch, INPUT);
@@ -108,6 +124,7 @@ void setup()
 void loop()
 {
 
+  //gonna talk to eugeene about how is 3second time/ mode selection works because theirs was awesome but i dont really understand if completely 
 
   // modes 
   // 0 = default after power up/reset
@@ -115,30 +132,77 @@ void loop()
   // 2 = Press mode button twice to enter. 
   // 3 = Press mode button three times to enter.
   // 4 = Press mode button four times to enter.
-  switch(ui_Robot_State_Index)
+
+  switch(ui_Robot_State_Index) //mode to operate in
   {
   case 0:    //Robot stopped
     {
       break;
     } 
 
+//******************RUNNING MODE***********************************************************
+//*****************************************************************************************
+
   case 1:    //Robot Run after 3 seconds
     {
+
+      //ive set this up so we can just add a new case for every new stage of the course
+      //*******PLEASE remember break; can't emphasize this enough #goodCoding
+      switch(stageIndex) //stage of the course
+      {
+      case 0:
+        {
+
+          break; //remeber if you dont put this it will just go into the next case once current case is completed
+        }
+
+      case 1:
+        {
+
+          break;
+        }
+
+      case 2:
+        {
+
+          break;
+        }
+
+      case 3:
+        {
+
+          break;
+        }
+
+
+
+
+
+      }
+
+
+
+
       break;
     } 
+    
+//******************END OF RUNNING MODE****************************************************
+//*****************************************************************************************
 
-  case 2:    //Calibrate line tracker light levels after 3 seconds
+  case 2:    //after 3 seconds
     {
       break;
     }
 
-  case 3:    // Calibrate line tracker dark levels after 3 seconds
+  case 3:    // after 3 seconds
     {
       break;
     }
 
-  case 4:    //Calibrate motor straightness after 3 seconds.
+  case 4:    //after 3 seconds.
     {
+
+      break;
     }
   }
 }
@@ -150,28 +214,28 @@ void loop()
 void Ping(char side)
 {
   if(side==L){
-  //Ping Ultrasonic
-  //Send the Ultrasonic Range Finder a 10 microsecond pulse per tech spec
-  digitalWrite(ci_LeftUltraPing, HIGH);
-  delayMicroseconds(10);  //The 10 microsecond pause where the pulse in "high"
-  digitalWrite(ci_LeftUltraPing, LOW);
-  //use command pulseIn to listen to Ultrasonic_Data pin to record the
-  //time that it takes from when the Pin goes HIGH until it goes LOW 
-  leftEchoTime = pulseIn(ci_LeftUltraData, HIGH, 10000);
+    //Ping Ultrasonic
+    //Send the Ultrasonic Range Finder a 10 microsecond pulse per tech spec
+    digitalWrite(ci_LeftUltraPing, HIGH);
+    delayMicroseconds(10);  //The 10 microsecond pause where the pulse in "high"
+    digitalWrite(ci_LeftUltraPing, LOW);
+    //use command pulseIn to listen to Ultrasonic_Data pin to record the
+    //time that it takes from when the Pin goes HIGH until it goes LOW 
+    leftEchoTime = pulseIn(ci_LeftUltraData, HIGH, 10000);
   }
   else if(side==R){
-  digitalWrite(ci_RightUltraPing, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(ci_RightUltraPing, LOW);
-  rightEchoTime = pulseIn(ci_RightUltraData, HIGH, 10000);
+    digitalWrite(ci_RightUltraPing, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(ci_RightUltraPing, LOW);
+    rightEchoTime = pulseIn(ci_RightUltraData, HIGH, 10000);
   }
-  
+
 
   // Print Sensor Readings
 #ifdef DEBUG_ULTRASONIC
   if(side==L) echoTime = leftEchoTime;
   else if(side==R) echoTime = rightEchoTime;
- 
+
   Serial.print("Side: ");
   Serial.print(side);
   Serial.print(", Time (microseconds): ");
@@ -182,5 +246,7 @@ void Ping(char side)
   Serial.println(echoTime/58); //divide time by 58 to get distance in cm 
 #endif
 }
+
+
 
 
