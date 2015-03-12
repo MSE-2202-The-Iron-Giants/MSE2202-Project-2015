@@ -12,6 +12,7 @@
 
 //*******uncoment to debug******
 //#define DEBUG_ULTRASONIC
+//#define DEBUG_ENCODERS 
 
 
 
@@ -24,7 +25,7 @@ Servo clawMotor;
 //add x and y tower motors
 
 I2CEncoder encoder_FrontMotor;
-I2CEncoder encoder_BackMoror;
+I2CEncoder encoder_BackMotor;
 I2CEncoder encoder_LeftMotor;
 I2CEncoder encoder_RightMotor;
 //possible have to add more encoders depending on which motors we use for x and y axis
@@ -119,8 +120,16 @@ void setup()
   pinMode(ci_MotorEnableSwitch, INPUT);
 
   //have to initiate I2C motors in the order they are attached starting at the Aurdino
-  
-  
+  encoder_FrontMotor.init((25.93384736)*(1.0/3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
+  encoder_FrontMotor.setReversed(false);  // adjust for positive count when moving forward
+  encoder_BackMotor.init((25.93384736)*(1.0/3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
+  encoder_BackMotor.setReversed(true);  // adjust for positive count when moving forward
+  encoder_LeftMotor.init((25.93384736)*(1.0/3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
+  encoder_LeftMotor.setReversed(false);  // adjust for positive count when moving forward
+  encoder_RightMotor.init((25.93384736)*(1.0/3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
+  encoder_RightMotor.setReversed(true);  // adjust for positive count when moving forward
+  //this means position should be measured in cm, and speed in cm/minuite, but we likely wont be measuring speed
+  //might need to chang the setReverse() paramaters based on testing but i know how they need to be in relation to one another
 }
 
 
@@ -132,7 +141,7 @@ void loop()
   }
 
   // button-based mode selection
-  if(CharliePlexM::ui_Btn)
+  if(CharliePlexM::ui_Btn)//need to figure out the button
   {
     if(bt_DoOnce == false)
     {
@@ -167,44 +176,62 @@ void loop()
 
   case 1:    //Robot Run after 3 seconds
     {
-
-      //ive set this up so we can just add a new case for every new stage of the course
-      //*******PLEASE remember break; can't emphasize this enough #goodCoding
-      switch(stageIndex) //stage of the course
+      if(bt_3_S_TimeUp)
       {
-      case 0:
+
+#ifdef DEBUG_ENCODERS           
+        frontMotorPos = encoder_FrontMotor.getPosition();
+        backMotorPos = encoder_BackMotor.getPosition();
+        leftMotorPos = encoder_LeftMotor.getPosition();
+        rightMotorPos = encoder_RightMotor.getPosition();
+
+        Serial.print("Encoders F: ");
+        Serial.print(encoder_FrontMotor.getPosition());
+        Serial.print(", B: ");
+        Serial.print(encoder_BackMotor.getPosition());
+        Serial.print(", L: ");
+        Serial.println(leftMotorPos, DEC);
+        Serial.print(", R: ");
+        Serial.println(RightMotorPos, DEC);
+#endif
+
+        //ive set this up so we can just add a new case for every new stage of the course
+        //*******PLEASE remember break; can't emphasize this enough #goodCoding
+        switch(stageIndex) //stage of the course
         {
+        case 0:
+          {
 
-          break; //remeber if you dont put this it will just go into the next case once current case is completed
+            break; //remeber if you dont put this it will just go into the next case once current case is completed
+          }
+
+        case 1:
+          {
+
+            break;
+          }
+
+        case 2:
+          {
+
+            break;
+          }
+
+        case 3:
+          {
+
+            break;
+          }
+
+
+
+
+
         }
-
-      case 1:
-        {
-
-          break;
-        }
-
-      case 2:
-        {
-
-          break;
-        }
-
-      case 3:
-        {
-
-          break;
-        }
-
-
 
 
 
       }
-
-
-
-
       break;
     } 
 
@@ -267,6 +294,7 @@ void Ping(char side)
   Serial.println(echoTime/58); //divide time by 58 to get distance in cm 
 #endif
 }
+
 
 
 
