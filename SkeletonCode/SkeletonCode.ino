@@ -35,7 +35,7 @@ boolean bt_MotorsEnabled = true;
 const int ci_LeftUltraPing = 2;   //input plug
 const int ci_LeftUltraData = 3;   //output plug
 const int ci_RightUltraPing =4;
-const int ci_RightUltraData=3; //can they have the same input pin since we are only reading one at a time?? i wanna say yes
+const int ci_RightUltraData=5; //needs to be a different pin then leftUltra
 const int ci_CharlieplexLED1 = 4; //will we use these? if so we dont have enough pins i think...
 const int ci_CharlieplexLED2 = 5;
 const int ci_CharlieplexLED3 = 6;
@@ -76,9 +76,11 @@ unsigned long rightEchoTime;
 unsigned int modeIndex=0;
 unsigned int stageIndex=0;
 
+unsigned long ul_3_S_Timer = 0;
+
 boolean bt_Heartbeat = true;
-boolean bt_3_S_Time_Up = false;
-boolean bt_Do_Once = false;
+boolean bt_3_S_TimeUp = false;
+boolean bt_DoOnce = false;
 
 void setup()
 {
@@ -117,14 +119,34 @@ void setup()
   pinMode(ci_MotorEnableSwitch, INPUT);
 
   //have to initiate I2C motors in the order they are attached starting at the Aurdino
-
+  
+  
 }
 
 
 void loop()
 {
+  if((millis() - ul_3_S_Timer) > 3000)
+  {
+    bt_3_S_TimeUp = true;
+  }
 
-  //gonna talk to eugeene about how is 3second time/ mode selection works because theirs was awesome but i dont really understand if completely 
+  // button-based mode selection
+  if(CharliePlexM::ui_Btn)
+  {
+    if(bt_DoOnce == false)
+    {
+      bt_DoOnce = true;
+      modeIndex++;
+      modeIndex = modeIndex & 7; // bitwise AND, eaugin said it resests counter if you press 7 times or something
+      ul_3_S_Timer = millis();
+      bt_3_S_TimeUp = false;
+    }
+  }
+  else
+  {
+    bt_DoOnce = LOW; //why low not false? or do LOW and false both mean exactly 0? i know LOW is literrally just 0
+  }
 
   // modes 
   // 0 = default after power up/reset
@@ -140,8 +162,8 @@ void loop()
       break;
     } 
 
-//******************RUNNING MODE***********************************************************
-//*****************************************************************************************
+    //******************RUNNING MODE***********************************************************
+    //*****************************************************************************************
 
   case 1:    //Robot Run after 3 seconds
     {
@@ -185,9 +207,9 @@ void loop()
 
       break;
     } 
-    
-//******************END OF RUNNING MODE****************************************************
-//*****************************************************************************************
+
+    //******************END OF RUNNING MODE****************************************************
+    //*****************************************************************************************
 
   case 2:    //after 3 seconds
     {
@@ -229,7 +251,7 @@ void Ping(char side)
     digitalWrite(ci_RightUltraPing, LOW);
     rightEchoTime = pulseIn(ci_RightUltraData, HIGH, 10000);
   }
-  
+
   // Print Sensor Readings
 #ifdef DEBUG_ULTRASONIC
   if(side==L) echoTime = leftEchoTime;
@@ -245,6 +267,8 @@ void Ping(char side)
   Serial.println(echoTime/58); //divide time by 58 to get distance in cm 
 #endif
 }
+
+
 
 
 
