@@ -129,6 +129,8 @@ void setup()
   encoder_BackMotor.setReversed(true);  // adjust for positive count when moving forward
   encoder_LeftMotor.init((25.93384736)*(1.0/3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
   encoder_LeftMotor.setReversed(false);  // adjust for positive count when moving forward
+
+  
   //this means position should be measured in cm, and speed in cm/minuite, but we likely wont be measuring speed
   //might need to chang the setReverse() paramaters based on testing but i know how they need to be in relation to one another
 }
@@ -175,9 +177,9 @@ void loop()
     //******************RUNNING MODE***********************************************************
     //*****************************************************************************************
 
-  case 1:    //Robot Run after 3 seconds
+  case 1:    
     {
-      if(bt_3_S_TimeUp)
+      if(bt_3_S_TimeUp) //Run after 3 seconds
       {
 
 #ifdef DEBUG_ENCODERS           
@@ -333,8 +335,8 @@ void Drive(char Direction = 'F', int Speed = 300) //note i made Speed/Dirrection
   }
 }
 
-//Slide is for diagonal movement FL,FR,BL,BR
-void Slide(char Direction, int Speed = 300)
+//Slide is for diagonal movement (all 4 motors running) FL,FR,BL,BR
+void Slide(char Direction, int Speed = 300) 
 {
   if(Direction=='FL'){
     frontMotor.writeMicroseconds(motorStopSpeed-Speed);
