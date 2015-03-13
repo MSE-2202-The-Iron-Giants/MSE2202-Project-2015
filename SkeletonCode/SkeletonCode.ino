@@ -305,27 +305,27 @@ void Stop()
 }
 //Speed is your value from 1500 (ie Drive(F,300); will make L&R wheels writeMicroseconds(1800)
 //Drive is is F,B,L,R
-void Drive(char dirrection = 'F', int Speed = 300) //note i made Speed with a capital S because lowercase made it highlighted so didnt know if that would have affected anything
+void Drive(char Direction = 'F', int Speed = 300) //note i made Speed/Dirrection with a capital S/D because lowercase made it highlighted so didnt know if that would have affected anything
 {
-  if(dirrection=='F'){
+  if(Direction=='F'){
     frontMotor.writeMicroseconds(motorStopSpeed);
     backMotor.writeMicroseconds(motorStopSpeed);
     leftMotor.writeMicroseconds(motorStopSpeed+Speed);
     rightMotor.writeMicroseconds(motorStopSpeed+Speed);
   }
-  else if(dirrection=='B'){
+  else if(Direction=='B'){
     frontMotor.writeMicroseconds(motorStopSpeed);
     backMotor.writeMicroseconds(motorStopSpeed);
     leftMotor.writeMicroseconds(motorStopSpeed-Speed);
     rightMotor.writeMicroseconds(motorStopSpeed-Speed);
   }
-  else if(dirrection=='L'){
+  else if(Direction=='L'){
     frontMotor.writeMicroseconds(motorStopSpeed-Speed);
     backMotor.writeMicroseconds(motorStopSpeed-Speed);
     leftMotor.writeMicroseconds(motorStopSpeed);
     rightMotor.writeMicroseconds(motorStopSpeed);
   }
-  else if(dirrection=='R'){
+  else if(Direction=='R'){
     frontMotor.writeMicroseconds(motorStopSpeed+Speed);
     backMotor.writeMicroseconds(motorStopSpeed+Speed);
     leftMotor.writeMicroseconds(motorStopSpeed);
@@ -334,27 +334,27 @@ void Drive(char dirrection = 'F', int Speed = 300) //note i made Speed with a ca
 }
 
 //Slide is for diagonal movement FL,FR,BL,BR
-void Slide(char dirrection, int Speed = 300)
+void Slide(char Direction, int Speed = 300)
 {
-  if(dirrection=='FL'){
+  if(Direction=='FL'){
     frontMotor.writeMicroseconds(motorStopSpeed-Speed);
     backMotor.writeMicroseconds(motorStopSpeed-Speed);
     leftMotor.writeMicroseconds(motorStopSpeed+Speed);
     rightMotor.writeMicroseconds(motorStopSpeed+Speed);
   }
-  else if(dirrection=='FR'){
+  else if(Direction=='FR'){
     frontMotor.writeMicroseconds(motorStopSpeed+Speed);
     backMotor.writeMicroseconds(motorStopSpeed+Speed);
     leftMotor.writeMicroseconds(motorStopSpeed+Speed);
     rightMotor.writeMicroseconds(motorStopSpeed+Speed);
   }
-  else if(dirrection=='BL'){
+  else if(Direction=='BL'){
     frontMotor.writeMicroseconds(motorStopSpeed-Speed);
     backMotor.writeMicroseconds(motorStopSpeed-Speed);
     leftMotor.writeMicroseconds(motorStopSpeed-Speed);
     rightMotor.writeMicroseconds(motorStopSpeed-Speed);
   }
-  else if(dirrection=='BR'){
+  else if(Direction=='BR'){
     frontMotor.writeMicroseconds(motorStopSpeed+Speed);
     backMotor.writeMicroseconds(motorStopSpeed+Speed);
     leftMotor.writeMicroseconds(motorStopSpeed-Speed);
@@ -363,15 +363,15 @@ void Slide(char dirrection, int Speed = 300)
 }
 
 //Turn turns about centre of base, L = counter clockwise, R = clockwise
-void Turn(char dirrection)
+void Turn(char Direction)
 {
-  if(dirrection=='L'){
+  if(Direction=='L'){
     frontMotor.writeMicroseconds(motorStopSpeed);
     backMotor.writeMicroseconds(motorStopSpeed);
     leftMotor.writeMicroseconds(motorStopSpeed);
     rightMotor.writeMicroseconds(motorStopSpeed);
   }
-  else if(dirrection=='R'){
+  else if(Direction=='R'){
     frontMotor.writeMicroseconds(motorStopSpeed);
     backMotor.writeMicroseconds(motorStopSpeed);
     leftMotor.writeMicroseconds(motorStopSpeed);
@@ -381,18 +381,18 @@ void Turn(char dirrection)
 
 //TurnAngle will turn to a specific angle (should ONLY be used when all that needs to be done is the turn, no other 
 //polling as it will not exit this function until the turn is complete
-//Defult dirrection is R/Clockwise
+//Defult Direction is R/Clockwise
 /*in progress, ill have to figure out the relationship between angle and encoder counts
  this may just become a turn 90degree function as the only times we likly have to turn to a speecific known angle would be 90 or multiples of it
- void TurnAngle(int Angle, char dirrection ='R')
+ void TurnAngle(int Angle, char Direction ='R')
  {
- if(dirrection=='L'){
+ if(Direction=='L'){
  frontMotor.writeMicroseconds(motorStopSpeed-Speed);
  backMotor.writeMicroseconds(motorStopSpeed+Speed);
  leftMotor.writeMicroseconds(motorStopSpeed-Speed);
  rightMotor.writeMicroseconds(motorStopSpeed+Speed);
  }
- else if(dirrection=='R'){
+ else if(Direction=='R'){
  frontMotor.writeMicroseconds(motorStopSpeed+Speed);
  backMotor.writeMicroseconds(motorStopSpeed-Speed);
  leftMotor.writeMicroseconds(motorStopSpeed+Speed);
