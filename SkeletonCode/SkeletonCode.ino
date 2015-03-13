@@ -64,6 +64,7 @@ unsigned int frontMotorSpeed;
 unsigned int backMotorSpeed;
 unsigned int leftMotorSpeed;
 unsigned int rightMotorSpeed;
+unsigned int motorStopSpeed=1500;
 unsigned long frontMotorPos;
 unsigned long backMotorPos;
 unsigned long leftMotorPos;
@@ -294,6 +295,114 @@ void Ping(char side)
   Serial.println(echoTime/58); //divide time by 58 to get distance in cm 
 #endif
 }
+
+void Stop()
+{
+  frontMotor.writeMicroseconds(motorStopSpeed);
+  backMotor.writeMicroseconds(motorStopSpeed);
+  leftMotor.writeMicroseconds(motorStopSpeed);
+  rightMotor.writeMicroseconds(motorStopSpeed);
+}
+//Speed is your value from 1500 (ie Drive(F,300); will make L&R wheels writeMicroseconds(1800)
+//Drive is is F,B,L,R
+void Drive(char dirrection = 'F', int Speed = 300) //note i made Speed with a capital S because lowercase made it highlighted so didnt know if that would have affected anything
+{
+  if(dirrection=='F'){
+    frontMotor.writeMicroseconds(motorStopSpeed);
+    backMotor.writeMicroseconds(motorStopSpeed);
+    leftMotor.writeMicroseconds(motorStopSpeed+Speed);
+    rightMotor.writeMicroseconds(motorStopSpeed+Speed);
+  }
+  else if(dirrection=='B'){
+    frontMotor.writeMicroseconds(motorStopSpeed);
+    backMotor.writeMicroseconds(motorStopSpeed);
+    leftMotor.writeMicroseconds(motorStopSpeed-Speed);
+    rightMotor.writeMicroseconds(motorStopSpeed-Speed);
+  }
+  else if(dirrection=='L'){
+    frontMotor.writeMicroseconds(motorStopSpeed-Speed);
+    backMotor.writeMicroseconds(motorStopSpeed-Speed);
+    leftMotor.writeMicroseconds(motorStopSpeed);
+    rightMotor.writeMicroseconds(motorStopSpeed);
+  }
+  else if(dirrection=='R'){
+    frontMotor.writeMicroseconds(motorStopSpeed+Speed);
+    backMotor.writeMicroseconds(motorStopSpeed+Speed);
+    leftMotor.writeMicroseconds(motorStopSpeed);
+    rightMotor.writeMicroseconds(motorStopSpeed);
+  }
+}
+
+//Slide is for diagonal movement FL,FR,BL,BR
+void Slide(char dirrection, int Speed = 300)
+{
+  if(dirrection=='FL'){
+    frontMotor.writeMicroseconds(motorStopSpeed-Speed);
+    backMotor.writeMicroseconds(motorStopSpeed-Speed);
+    leftMotor.writeMicroseconds(motorStopSpeed+Speed);
+    rightMotor.writeMicroseconds(motorStopSpeed+Speed);
+  }
+  else if(dirrection=='FR'){
+    frontMotor.writeMicroseconds(motorStopSpeed+Speed);
+    backMotor.writeMicroseconds(motorStopSpeed+Speed);
+    leftMotor.writeMicroseconds(motorStopSpeed+Speed);
+    rightMotor.writeMicroseconds(motorStopSpeed+Speed);
+  }
+  else if(dirrection=='BL'){
+    frontMotor.writeMicroseconds(motorStopSpeed-Speed);
+    backMotor.writeMicroseconds(motorStopSpeed-Speed);
+    leftMotor.writeMicroseconds(motorStopSpeed-Speed);
+    rightMotor.writeMicroseconds(motorStopSpeed-Speed);
+  }
+  else if(dirrection=='BR'){
+    frontMotor.writeMicroseconds(motorStopSpeed+Speed);
+    backMotor.writeMicroseconds(motorStopSpeed+Speed);
+    leftMotor.writeMicroseconds(motorStopSpeed-Speed);
+    rightMotor.writeMicroseconds(motorStopSpeed-Speed);
+  }
+}
+
+//Turn turns about centre of base, L = counter clockwise, R = clockwise
+void Turn(char dirrection)
+{
+  if(dirrection=='L'){
+    frontMotor.writeMicroseconds(motorStopSpeed);
+    backMotor.writeMicroseconds(motorStopSpeed);
+    leftMotor.writeMicroseconds(motorStopSpeed);
+    rightMotor.writeMicroseconds(motorStopSpeed);
+  }
+  else if(dirrection=='R'){
+    frontMotor.writeMicroseconds(motorStopSpeed);
+    backMotor.writeMicroseconds(motorStopSpeed);
+    leftMotor.writeMicroseconds(motorStopSpeed);
+    rightMotor.writeMicroseconds(motorStopSpeed);
+  }
+}
+
+//TurnAngle will turn to a specific angle (should ONLY be used when all that needs to be done is the turn, no other 
+//polling as it will not exit this function until the turn is complete
+//Defult dirrection is R/Clockwise
+/*in progress, ill have to figure out the relationship between angle and encoder counts
+ this may just become a turn 90degree function as the only times we likly have to turn to a speecific known angle would be 90 or multiples of it
+ void TurnAngle(int Angle, char dirrection ='R')
+ {
+ if(dirrection=='L'){
+ frontMotor.writeMicroseconds(motorStopSpeed-Speed);
+ backMotor.writeMicroseconds(motorStopSpeed+Speed);
+ leftMotor.writeMicroseconds(motorStopSpeed-Speed);
+ rightMotor.writeMicroseconds(motorStopSpeed+Speed);
+ }
+ else if(dirrection=='R'){
+ frontMotor.writeMicroseconds(motorStopSpeed+Speed);
+ backMotor.writeMicroseconds(motorStopSpeed-Speed);
+ leftMotor.writeMicroseconds(motorStopSpeed+Speed);
+ rightMotor.writeMicroseconds(motorStopSpeed-Speed);
+ }
+ }*/
+
+
+
+
 
 
 
