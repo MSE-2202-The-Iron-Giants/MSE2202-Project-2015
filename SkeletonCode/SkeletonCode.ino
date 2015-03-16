@@ -55,7 +55,7 @@ const int ci_I2C_SDA = A4;         // I2C data = white
 const int ci_I2C_SCL = A5;         // I2C clock = yellow
 
 //constant values
-const int ci_motorStop = 1500;
+const int motorStopSpeed = 1500;
 const int ci_ClawOpen = 180;
 const int ci_ClawClosed = 0;
 
@@ -64,7 +64,7 @@ unsigned int frontMotorSpeed;
 unsigned int backMotorSpeed;
 unsigned int leftMotorSpeed;
 unsigned int rightMotorSpeed;
-unsigned int motorStopSpeed = 1500;
+//unsigned int motorStopSpeed = 1500;
 unsigned long frontMotorPos;
 unsigned long backMotorPos;
 unsigned long leftMotorPos;
