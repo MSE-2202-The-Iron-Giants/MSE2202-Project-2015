@@ -289,44 +289,10 @@ void loop()
 
 //**************end of void loop() *****************************************************************
 
+//Functions
 
-//measure distance to target using ultrasonic sensor
-void Ping(char side)
-{
-  if (side == 'L') {
-    //Ping Ultrasonic
-    //Send the Ultrasonic Range Finder a 10 microsecond pulse per tech spec
-    digitalWrite(ci_LeftUltraPing, HIGH);
-    delayMicroseconds(10);  //The 10 microsecond pause where the pulse in "high"
-    digitalWrite(ci_LeftUltraPing, LOW);
-    //use command pulseIn to listen to Ultrasonic_Data pin to record the
-    //time that it takes from when the Pin goes HIGH until it goes LOW
-    leftEchoTime = pulseIn(ci_LeftUltraData, HIGH, 10000);
-  }
-  else if (side == 'R') {
-    digitalWrite(ci_RightUltraPing, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(ci_RightUltraPing, LOW);
-    rightEchoTime = pulseIn(ci_RightUltraData, HIGH, 10000);
-  }
-
-  // Print Sensor Readings
-#ifdef DEBUG_ULTRASONIC
-  if (side == L) echoTime = leftEchoTime;
-  else if (side == R) echoTime = rightEchoTime;
-
-  Serial.print("Side: ");
-  Serial.print(side);
-  Serial.print(", Time (microseconds): ");
-  Serial.print(echoTime, DEC);
-  Serial.print(", Inches: ");
-  Serial.print(echoTime / 148); //divide time by 148 to get distance in inches, gonna have to play around with the number
-  Serial.print(", cm: ");
-  Serial.println(echoTime / 58); //divide time by 58 to get distance in cm
-#endif
-}
-
-void Stop()
+//Base movement functions
+void Stop() //stops all base motors
 {
   frontMotor.writeMicroseconds(motorStopSpeed);
   backMotor.writeMicroseconds(motorStopSpeed);
@@ -392,7 +358,7 @@ void Slide(String Direction, int Speed)
   }
 }
 
-//Turn turns about centre of base, L = counter clockwise, R = clockwise
+//Turn turns about centre of base, direction is dirrection front will turn -> L = counter clockwise, R = clockwise
 void Turn(char Direction)
 {
   if (Direction == 'L') {
@@ -429,6 +395,47 @@ void Turn(char Direction)
  rightMotor.writeMicroseconds(motorStopSpeed-Speed);
  }
  }*/
+
+//measure distance to target using ultrasonic sensor
+void Ping(char side)
+{
+  if (side == 'L') {
+    //Ping Ultrasonic
+    //Send the Ultrasonic Range Finder a 10 microsecond pulse per tech spec
+    digitalWrite(ci_LeftUltraPing, HIGH);
+    delayMicroseconds(10);  //The 10 microsecond pause where the pulse in "high"
+    digitalWrite(ci_LeftUltraPing, LOW);
+    //use command pulseIn to listen to Ultrasonic_Data pin to record the
+    //time that it takes from when the Pin goes HIGH until it goes LOW
+    leftEchoTime = pulseIn(ci_LeftUltraData, HIGH, 10000);
+  }
+  else if (side == 'R') {
+    digitalWrite(ci_RightUltraPing, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(ci_RightUltraPing, LOW);
+    rightEchoTime = pulseIn(ci_RightUltraData, HIGH, 10000);
+  }
+
+  // Print Sensor Readings
+#ifdef DEBUG_ULTRASONIC
+  if (side == 'L') echoTime = leftEchoTime;
+  else if (side == 'R') echoTime = rightEchoTime;
+
+  Serial.print("Side: ");
+  Serial.print(side);
+  Serial.print(", Time (microseconds): ");
+  Serial.print(echoTime, DEC);
+  Serial.print(", Inches: ");
+  Serial.print(echoTime / 148); //divide time by 148 to get distance in inches, gonna have to play around with the number
+  Serial.print(", cm: ");
+  Serial.println(echoTime / 58); //divide time by 58 to get distance in cm
+#endif
+}
+
+void PingIR()
+{
+  
+}
 
 
 
