@@ -84,9 +84,10 @@ boolean bt_Heartbeat = true;
 boolean bt_3_S_TimeUp = false;
 boolean bt_DoOnce = false;
 
-void Drive(char, int);
-void Slide(String,int);
- 
+//function prototypes
+void Drive(char Direction = 'F', int Speed = 300);
+void Slide(String Direction = "FL", int Speed = 300);
+
 
 void setup()
 {
@@ -213,22 +214,24 @@ void loop()
                 //                backMotor.writeMicroseconds(1700);
                 //                leftMotor.writeMicroseconds(1700);
                 //                rightMotor.writeMicroseconds(1700);
+                Drive();
+                delay(1000);
+                Drive('R', 300);
+                delay(1000);
+                Drive('B', 300);
+                delay(1000);
+                Drive('L', 300);
+                delay(1000);
                 Drive('F', 300);
                 delay(1000);
-//                Drive('B', 300);
-//                delay(1000);
-//                Drive('R', 300);
-//                delay(1000);
-//                Drive('L', 300);
-//                delay(1000);
-//                Slide("FR",300);
-//                delay(1000);
-//                Slide("FL",300);
-//                delay(1000);
-//                Slide("BR",300);
-//                delay(1000);
-//                Slide("BL",300);
-//                delay(1000);
+                Slide("FR", 300);
+                delay(1000);
+                Slide("BR", 300);
+                delay(1000);
+                Slide("BL", 300);
+                delay(1000);
+                Slide();
+                delay(1000);
 
                 break; //remeber if you dont put this it will just go into the next case once current case is completed
               }
@@ -332,7 +335,7 @@ void Stop()
 }
 //Speed is your value from 1500 (ie Drive(F,300); will make L&R wheels writeMicroseconds(1800)
 //Drive is is F,B,L,R
-void Drive(char Direction = 'F', int Speed = 300) //note i made Speed/Dirrection with a capital S/D because lowercase made it highlighted so didnt know if that would have affected anything
+void Drive(char Direction, int Speed) //note i made Speed/Dirrection with a capital S/D because lowercase made it highlighted so didnt know if that would have affected anything
 {
   if (Direction == 'F') {
     frontMotor.writeMicroseconds(motorStopSpeed);
@@ -361,7 +364,7 @@ void Drive(char Direction = 'F', int Speed = 300) //note i made Speed/Dirrection
 }
 
 //Slide is for diagonal movement (all 4 motors running) FL,FR,BL,BR
-void Slide(String Direction, int Speed = 300)
+void Slide(String Direction, int Speed)
 {
   if (Direction == "FL") {
     frontMotor.writeMicroseconds(motorStopSpeed - Speed);
