@@ -17,6 +17,7 @@
 
 
 
+
 Servo frontMotor;
 Servo backMotor;
 Servo leftMotor;
@@ -327,6 +328,17 @@ void Drive(char Direction, int Speed) //note i made Speed/Dirrection with a capi
     leftMotor.writeMicroseconds(motorStopSpeed);
     rightMotor.writeMicroseconds(motorStopSpeed);
   }
+
+#ifdef DEBUG_ENCODERS
+  Serial.print("Encoders F: ");
+  Serial.print(encoder_FrontMotor.getPosition());
+  Serial.print(", B: ");
+  Serial.print(encoder_BackMotor.getPosition());
+  Serial.print(", L: ");
+  Serial.print(encoder_LeftMotor.getPosition());
+  Serial.print(", R ");
+  Serial.println(encoder_RightMotor.getPosition());
+#endif
 }
 
 //Slide is for diagonal movement (all 4 motors running) FL,FR,BL,BR
@@ -356,6 +368,16 @@ void Slide(String Direction, int Speed)
     leftMotor.writeMicroseconds(motorStopSpeed - Speed);
     rightMotor.writeMicroseconds(motorStopSpeed - Speed);
   }
+#ifdef DEBUG_ENCODERS
+  Serial.print("Encoders F: ");
+  Serial.print(encoder_FrontMotor.getPosition());
+  Serial.print(", B: ");
+  Serial.print(encoder_BackMotor.getPosition());
+  Serial.print(", L: ");
+  Serial.print(encoder_LeftMotor.getPosition());
+  Serial.print(", R ");
+  Serial.println(encoder_RightMotor.getPosition());
+#endif
 }
 
 //Turn turns about centre of base, direction is dirrection front will turn -> L = counter clockwise, R = clockwise
@@ -373,6 +395,16 @@ void Turn(char Direction)
     leftMotor.writeMicroseconds(motorStopSpeed);
     rightMotor.writeMicroseconds(motorStopSpeed);
   }
+#ifdef DEBUG_ENCODERS
+  Serial.print("Encoders F: ");
+  Serial.print(encoder_FrontMotor.getPosition());
+  Serial.print(", B: ");
+  Serial.print(encoder_BackMotor.getPosition());
+  Serial.print(", L: ");
+  Serial.print(encoder_LeftMotor.getPosition());
+  Serial.print(", R ");
+  Serial.println(encoder_RightMotor.getPosition());
+#endif
 }
 
 //TurnAngle will turn to a specific angle (should ONLY be used when all that needs to be done is the turn, no other
@@ -394,6 +426,16 @@ void Turn(char Direction)
  leftMotor.writeMicroseconds(motorStopSpeed+Speed);
  rightMotor.writeMicroseconds(motorStopSpeed-Speed);
  }
+ #ifdef DEBUG_ENCODERS
+  Serial.print("Encoders F: ");
+  Serial.print(encoder_FrontMotor.getPosition());
+  Serial.print(", B: ");
+  Serial.println(encoder_BackMotor.getPosition());
+  Serial.print(", L: ");
+  Serial.println(encoder_LeftMotor.getPosition());
+  Serial.print(", R ");
+  Serial.println(encoder_RightMotor.getPosition());
+#endif
  }*/
 
 //measure distance to target using ultrasonic sensor
@@ -434,7 +476,7 @@ void Ping(char side)
 
 void PingIR()
 {
-  
+
 }
 
 
