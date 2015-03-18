@@ -98,8 +98,8 @@ void setup()
 
   //if we wanna use charliplex
   // 2pin=2LED, 3p=6, 4p=12, not sure if need all 4 pins to use button
-  //CharliePlexM::setBtn(ci_CharlieplexLED1,ci_CharlieplexLED2,
-  //                      ci_CharlieplexLED3,ci_CharlieplexLED4,ci_ModeButton);
+  CharliePlexM::setBtn(ci_CharlieplexLED1,ci_CharlieplexLED2,
+                       ci_CharlieplexLED3,ci_CharlieplexLED4,ci_ModeButton);
 
 
   //set up ultrasonic
