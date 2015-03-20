@@ -38,6 +38,8 @@ const int ci_LeftUltraPing = 2;   //input plug
 const int ci_LeftUltraData = 3;   //output plug
 const int ci_RightUltraPing = 4;
 const int ci_RightUltraData = 5; //needs to be a different pin then leftUltra
+const int ci_TopUltraPing = 6;//needs to be a diff pin then
+const int ci_TopUltraData = 7; // needs to be a different pin
 const int ci_CharlieplexLED1 = 4; //will we use these? if so we dont have enough pins i think...
 const int ci_CharlieplexLED2 = 5;
 const int ci_CharlieplexLED3 = 6;
@@ -75,6 +77,7 @@ unsigned long clawMotorPos;
 unsigned long echoTime;
 unsigned long leftEchoTime;
 unsigned long rightEchoTime;
+unsigned long topEchoTime;
 
 unsigned int modeIndex = 1;
 unsigned int stageIndex = 0;
@@ -88,6 +91,8 @@ boolean bt_DoOnce = false;
 //function prototypes
 void Drive(char Direction = 'F', int Speed = 300);
 void Slide(String Direction = "FL", int Speed = 300);
+void Lift(int);
+void Extend();
 
 
 void setup()
@@ -98,8 +103,8 @@ void setup()
 
   //if we wanna use charliplex
   // 2pin=2LED, 3p=6, 4p=12, not sure if need all 4 pins to use button
-  CharliePlexM::setBtn(ci_CharlieplexLED1,ci_CharlieplexLED2,
-                       ci_CharlieplexLED3,ci_CharlieplexLED4,ci_ModeButton);
+  CharliePlexM::setBtn(ci_CharlieplexLED1, ci_CharlieplexLED2,
+                       ci_CharlieplexLED3, ci_CharlieplexLED4, ci_ModeButton);
 
 
   //set up ultrasonic
@@ -437,6 +442,14 @@ void Turn(char Direction)
   Serial.println(encoder_RightMotor.getPosition());
 #endif
  }*/
+ 
+void Lift(int height)
+{
+}
+
+void Extend()
+{
+}
 
 //measure distance to target using ultrasonic sensor
 void Ping(char side)
@@ -457,12 +470,19 @@ void Ping(char side)
     digitalWrite(ci_RightUltraPing, LOW);
     rightEchoTime = pulseIn(ci_RightUltraData, HIGH, 10000);
   }
+  else if (side == 'T') {
+    digitalWrite(ci_TopUltraPing, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(ci_TopUltraPing, LOW);
+    topEchoTime = pulseIn(ci_TopUltraData, HIGH, 10000);
+  }
 
   // Print Sensor Readings
 #ifdef DEBUG_ULTRASONIC
   if (side == 'L') echoTime = leftEchoTime;
   else if (side == 'R') echoTime = rightEchoTime;
-
+  else if (side == 'T') echoTime = TopEchoTime;
+  
   Serial.print("Side: ");
   Serial.print(side);
   Serial.print(", Time (microseconds): ");
