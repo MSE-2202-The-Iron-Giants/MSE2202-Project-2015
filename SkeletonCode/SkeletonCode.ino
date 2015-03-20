@@ -442,7 +442,7 @@ void Turn(char Direction)
   Serial.println(encoder_RightMotor.getPosition());
 #endif
  }*/
- 
+
 void Lift(int height)
 {
 }
@@ -482,7 +482,7 @@ void Ping(char side)
   if (side == 'L') echoTime = leftEchoTime;
   else if (side == 'R') echoTime = rightEchoTime;
   else if (side == 'T') echoTime = TopEchoTime;
-  
+
   Serial.print("Side: ");
   Serial.print(side);
   Serial.print(", Time (microseconds): ");
