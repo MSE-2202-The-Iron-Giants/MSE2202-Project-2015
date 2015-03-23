@@ -31,28 +31,34 @@ I2CEncoder encoder_LeftMotor;
 I2CEncoder encoder_RightMotor;
 //possible have to add more encoders depending on which motors we use for x and y axis
 
-boolean bt_MotorsEnabled = true;
+boolean bt_MotorsEnabled = false;
 
 //pins, pin numbers will change once we know everything that needs a pin
-const int ci_LeftUltraPing = 2;   //input plug
-const int ci_LeftUltraData = 3;   //output plug
-const int ci_RightUltraPing = 4;
-const int ci_RightUltraData = 5; //needs to be a different pin then leftUltra
-const int ci_TopUltraPing = 6;//needs to be a diff pin then
-const int ci_TopUltraData = 7; // needs to be a different pin
-const int ci_CharlieplexLED1 = 4; //will we use these? if so we dont have enough pins i think...
-const int ci_CharlieplexLED2 = 5;
-const int ci_CharlieplexLED3 = 6;
-const int ci_CharlieplexLED4 = 7;
-const int ci_ModeButton = 7;
+
+//const int ci_CharlieplexLED1 = 4; //will we use these? if so we dont have enough pins i think...
+//const int ci_CharlieplexLED2 = 5;
+//const int ci_CharlieplexLED3 = 6;
+//const int ci_CharlieplexLED4 = 7;
+const int ci_LeftUltraPing = A0;   //input plug
+const int ci_LeftUltraData = A1;   //output plug
+const int ci_RightUltraPing = A2;
+const int ci_RightUltraData = A3; //needs to be a different pin then leftUltra
+const int ci_TopUltraPing = 2;
+const int ci_TopUltraData = 3;
+const int ci_LiftMotor = 4;
+const int ci_ExtendMotor = 5;
+const int ci_ClawMotor = 6;
 const int ci_FrontMotor = 8;
 const int ci_BackMotor = 9;
 const int ci_LeftMotor = 10;
 const int ci_RightMotor = 11;
-const int ci_ClawMotor = 12;
-const int ci_MotorEnableSwitch = 13;//dont really wanna use this pin if possible i think but thinking about it more it might be
-//good to to have this switch on this pin because pin 13 is linkied to the and on board led that could should when motors are enabled or not
+const int ci_MotorEnableSwitch = 12;
+const int ci_ModeButton = 13;
 
+const int ci_TopLightSensor = A3; //these two are for testing, likely these connections will go on Board one
+const int ci_BottomLightSensor = A2;
+unsigned int topLightData;
+unsigned int bottomLightData;
 
 const int ci_I2C_SDA = A4;         // I2C data = white
 const int ci_I2C_SCL = A5;         // I2C clock = yellow
@@ -101,10 +107,11 @@ void setup()
   Serial.begin(9600);
 
 
+
   //if we wanna use charliplex
   // 2pin=2LED, 3p=6, 4p=12, not sure if need all 4 pins to use button
-  CharliePlexM::setBtn(ci_CharlieplexLED1, ci_CharlieplexLED2,
-                       ci_CharlieplexLED3, ci_CharlieplexLED4, ci_ModeButton);
+  //CharliePlexM::setBtn(ci_CharlieplexLED1, ci_CharlieplexLED2,
+  //                     ci_CharlieplexLED3, ci_CharlieplexLED4, ci_ModeButton);
 
 
   //set up ultrasonic
@@ -112,7 +119,11 @@ void setup()
   pinMode(ci_LeftUltraData, INPUT);
   pinMode(ci_RightUltraPing, OUTPUT);
   pinMode(ci_RightUltraData, INPUT);
-
+  
+  //set up light sensors
+  pinMode(ci_TopLightSensor,INPUT);
+  pinMode(ci_BottomLightSensor,INPUT);
+  
   // set up drive motors
   pinMode(ci_FrontMotor, OUTPUT);
   frontMotor.attach(ci_FrontMotor);
@@ -127,7 +138,7 @@ void setup()
   pinMode(ci_ClawMotor, OUTPUT);
   clawMotor.attach(ci_ClawMotor);
   clawMotor.write(ci_ClawOpen); //opens claw off start because why not? first thing we'll grab is the waterbottlee right??
-
+  
   // set up motor enable switch
   pinMode(ci_MotorEnableSwitch, INPUT);
 
@@ -215,29 +226,34 @@ void loop()
           {
             case 0:
               {
+                
+                topLightData=analogRead(ci_TopLightSensor);
+                bottomLightData=analogRead(ci_BottomLightSensor);
+                
+                Serial.print(" T: ");
+                Serial.print(topLightData);
+                Serial.print(" B: ");
+                Serial.println(bottomLightData);
+                
 
-                //                frontMotor.writeMicroseconds(1700);
-                //                backMotor.writeMicroseconds(1700);
-                //                leftMotor.writeMicroseconds(1700);
-                //                rightMotor.writeMicroseconds(1700);
-                Drive();
-                delay(1000);
-                Drive('R', 300);
-                delay(1000);
-                Drive('B', 300);
-                delay(1000);
-                Drive('L', 300);
-                delay(1000);
-                Drive('F', 300);
-                delay(1000);
-                Slide("FR", 300);
-                delay(1000);
-                Slide("BR", 300);
-                delay(1000);
-                Slide("BL", 300);
-                delay(1000);
-                Slide();
-                delay(1000);
+//                Drive();
+//                delay(1000);
+//                Drive('R', 300);
+//                delay(1000);
+//                Drive('B', 300);
+//                delay(1000);
+//                Drive('L', 300);
+//                delay(1000);
+//                Drive('F', 300);
+//                delay(1000);
+//                Slide("FR", 300);
+//                delay(1000);
+//                Slide("BR", 300);
+//                delay(1000);
+//                Slide("BL", 300);
+//                delay(1000);
+//                Slide();
+//                delay(1000);
 
                 break; //remeber if you dont put this it will just go into the next case once current case is completed
               }
