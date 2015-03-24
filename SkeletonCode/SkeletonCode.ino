@@ -1,6 +1,4 @@
 /*
-
-
  */
 
 #include <Servo.h>
@@ -31,7 +29,7 @@ I2CEncoder encoder_LeftMotor;
 I2CEncoder encoder_RightMotor;
 //possible have to add more encoders depending on which motors we use for x and y axis
 
-boolean bt_MotorsEnabled = false;
+boolean bt_MotorsEnabled = false; //(true = motors turned on)
 
 //pins, pin numbers will change once we know everything that needs a pin
 
@@ -52,20 +50,21 @@ const int ci_FrontMotor = 8;
 const int ci_BackMotor = 9;
 const int ci_LeftMotor = 10;
 const int ci_RightMotor = 11;
-const int ci_MotorEnableSwitch = 12;
-const int ci_ModeButton = 13;
+const int ci_ModeButton = 12;
+const int ci_MotorEnableSwitch = 13; //this will show if motors are enebled or not on pin 13
 
 const int ci_TopLightSensor = A3; //these two are for testing, likely these connections will go on Board one
 const int ci_BottomLightSensor = A2;
 unsigned int topLightData;
 unsigned int bottomLightData;
 
+//encoder wires
 const int ci_I2C_SDA = A4;         // I2C data = white
 const int ci_I2C_SCL = A5;         // I2C clock = yellow
 
 //constant values
-const int motorStopSpeed = 1500;
-const int ci_ClawOpen = 180;
+const int motorStopSpeed = 1500; //DC motors
+const int ci_ClawOpen = 180; //Claw Servo limits
 const int ci_ClawClosed = 0;
 
 //variables
@@ -80,7 +79,7 @@ unsigned long leftMotorPos;
 unsigned long rightMotorPos;
 unsigned long clawMotorPos;
 
-unsigned long echoTime;
+unsigned long echoTime; //general echoTime, usefull to have because you can set it equal to L,R,or T as done in ping function 
 unsigned long leftEchoTime;
 unsigned long rightEchoTime;
 unsigned long topEchoTime;
@@ -514,15 +513,3 @@ void PingIR()
 {
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
