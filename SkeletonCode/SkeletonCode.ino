@@ -29,12 +29,13 @@ I2CEncoder encoder_BackMotor;
 I2CEncoder encoder_LeftMotor;
 I2CEncoder encoder_RightMotor;
 //possible have to add more encoders depending on which motors we use for x and y axis
+//there is one encoder to each driving motor
 
-boolean bt_MotorsEnabled = true;
+boolean bt_MotorsEnabled = true; //whether or not motors are enabled
 
 //pins, pin numbers will change once we know everything that needs a pin
-const int ci_LeftUltraPing = 2;   //input plug
-const int ci_LeftUltraData = 3;   //output plug
+const int ci_LeftUltraPing = 2;   //input plug for left US
+const int ci_LeftUltraData = 3;   //output plug for left US
 const int ci_RightUltraPing =4;
 const int ci_RightUltraData=5; //needs to be a different pin then leftUltra
 const int ci_CharlieplexLED1 = 4; //will we use these? if so we dont have enough pins i think...
@@ -42,21 +43,23 @@ const int ci_CharlieplexLED2 = 5;
 const int ci_CharlieplexLED3 = 6;
 const int ci_CharlieplexLED4 = 7;
 const int ci_ModeButton = 7;
+//motor pins
 const int ci_FrontMotor = 8;
 const int ci_BackMotor = 9;
 const int ci_LeftMotor = 10;
 const int ci_RightMotor = 11;
 const int ci_ClawMotor = 12;
 const int ci_MotorEnableSwitch = 13;//dont really wanna use this pin if possible i think but thinking about it more it might be 
-//good to to have this switch on this pin because pin 13 is linkied to the and on board led that could should when motors are enabled or not
+//good to to have this switch on this pin because pin 13 is linkied to the on board led that could should when motors are enabled or not 
 
 
+//encoder wires
 const int ci_I2C_SDA = A4;         // I2C data = white
 const int ci_I2C_SCL = A5;         // I2C clock = yellow
 
 //constant values
-const int ci_motorStop = 1500;
-const int ci_ClawOpen = 180;
+const int ci_motorStop = 1500; //for DC motors
+const int ci_ClawOpen = 180; //for servo motors
 const int ci_ClawClosed = 0;
 
 //variables
@@ -64,14 +67,14 @@ unsigned int frontMotorSpeed;
 unsigned int backMotorSpeed;
 unsigned int leftMotorSpeed;
 unsigned int rightMotorSpeed;
-unsigned int motorStopSpeed=1500;
+//unsigned int motorStopSpeed=1500;
 unsigned long frontMotorPos;
 unsigned long backMotorPos;
 unsigned long leftMotorPos;
 unsigned long rightMotorPos;
 unsigned long clawMotorPos;
 
-unsigned long echoTime;
+unsigned long echoTime; //for the ultrasonic on the claw?
 unsigned long leftEchoTime;
 unsigned long rightEchoTime;
 
