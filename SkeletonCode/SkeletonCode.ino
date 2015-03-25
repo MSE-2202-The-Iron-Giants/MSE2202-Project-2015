@@ -23,6 +23,7 @@ Servo backMotor;
 Servo leftMotor;
 Servo rightMotor;
 Servo clawMotor;
+Servo beltMotor; 
 //add x and y tower motors
 
 I2CEncoder encoder_FrontMotor;
@@ -54,6 +55,7 @@ const int ci_LeftMotor = 10;
 const int ci_RightMotor = 11;
 const int ci_ModeButton = 12;
 const int ci_MotorEnableSwitch = 13; //this will show if motors are enebled or not on pin 13
+const int ci_BeltMotor = ; 
 
 const int ci_TopLightSensor = A3; //these two are for testing, likely these connections will go on Board one
 const int ci_BottomLightSensor = A2;
@@ -100,7 +102,7 @@ void Drive(char Direction = 'F', int Speed = 300);
 void Slide(String Direction = "FL", int Speed = 300);
 void Lift(int);
 void Extend();
-
+void Belt();
 
 void setup()
 {
@@ -139,6 +141,10 @@ void setup()
   pinMode(ci_ClawMotor, OUTPUT);
   clawMotor.attach(ci_ClawMotor);
   clawMotor.write(ci_ClawOpen); //opens claw off start because why not? first thing we'll grab is the waterbottlee right??
+  
+  //Set up Conveyor Belt Motor
+  pinMode(ci_BeltMotor, OUTPUT);
+  beltMotor.attach(ci_BeltMotor);
   
   // set up motor enable switch
   pinMode(ci_MotorEnableSwitch, INPUT);
@@ -516,7 +522,10 @@ void PingIR()
 
 }
 
-
+void Belt()
+{
+ beltMotor.writeMicroseconds(1700); 
+}
 
 
 
