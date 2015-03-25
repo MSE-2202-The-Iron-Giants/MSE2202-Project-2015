@@ -1,13 +1,4 @@
 /*
-make variable that holds value of wheel speed
-
-both us sensors ping and compare and adjust the wheelspeed accordingling to each distance
-updates wheelspeed once per loop and else accordinglything roughout the code accordingly , 
-or is this not neccessary because we alreadying have functions?
-
-//vblah blah blah funct ion on functions
-
-
  */
 
 #include <Servo.h>
