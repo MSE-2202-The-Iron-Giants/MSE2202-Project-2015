@@ -9,7 +9,7 @@
 
 
 //*******uncoment to debug******
-//#define DEBUG_ULTRASONIC
+#define DEBUG_ULTRASONIC
 //#define DEBUG_ENCODERS
 
 
@@ -37,10 +37,10 @@ boolean bt_MotorsEnabled = false; //(true = motors turned on)
 //const int ci_CharlieplexLED2 = 5;
 //const int ci_CharlieplexLED3 = 6;
 //const int ci_CharlieplexLED4 = 7;
-const int ci_LeftUltraPing = A0;   //input plug
-const int ci_LeftUltraData = A1;   //output plug
-const int ci_RightUltraPing = A2;
-const int ci_RightUltraData = A3; //needs to be a different pin then leftUltra
+const int ci_LeftUltraPing = A0;   //input plug yellow wire
+const int ci_LeftUltraData = A1;   //output plug orange wire
+const int ci_RightUltraPing = A2; //yellow
+const int ci_RightUltraData = A3; //orange
 const int ci_TopUltraPing = 2;
 const int ci_TopUltraData = 3;
 const int ci_LiftMotor = 4;
@@ -53,8 +53,8 @@ const int ci_RightMotor = 11;
 const int ci_ModeButton = 12;
 const int ci_MotorEnableSwitch = 13; //this will show if motors are enebled or not on pin 13
 
-const int ci_TopLightSensor = A3; //these two are for testing, likely these connections will go on Board one
-const int ci_BottomLightSensor = A2;
+const int ci_TopLightSensor = 4; //these two are for testing, likely these connections will go on Board one
+const int ci_BottomLightSensor = 5;
 unsigned int topLightData;
 unsigned int bottomLightData;
 
@@ -98,7 +98,7 @@ void Drive(char Direction = 'F', int Speed = 300);
 void Slide(String Direction = "FL", int Speed = 300);
 void Lift(int);
 void Extend();
-
+void Ping(char);
 
 void setup()
 {
@@ -222,17 +222,21 @@ void loop()
           //ive set this up so we can just add a new case for every new stage of the course
           //*******PLEASE remember break; can't emphasize this enough #goodCoding
           switch (stageIndex) //stage of the course
-          {
+          {\
             case 0:
               {
-                
-                topLightData=analogRead(ci_TopLightSensor);
-                bottomLightData=analogRead(ci_BottomLightSensor);
-                
-                Serial.print(" T: ");
-                Serial.print(topLightData);
-                Serial.print(" B: ");
-                Serial.println(bottomLightData);
+                Ping('R');
+                delay(100);
+                Ping('L');
+                delay(100);
+                Serial.println("blah");
+//                topLightData=analogRead(ci_TopLightSensor);
+//                bottomLightData=analogRead(ci_BottomLightSensor);
+//                
+//                Serial.print(" T: ");
+//                Serial.print(topLightData);
+//                Serial.print(" B: ");
+//                Serial.println(bottomLightData);
                 
 
 //                Drive();
@@ -478,12 +482,16 @@ void Ping(char side)
     //use command pulseIn to listen to Ultrasonic_Data pin to record the
     //time that it takes from when the Pin goes HIGH until it goes LOW
     leftEchoTime = pulseIn(ci_LeftUltraData, HIGH, 10000);
+    Serial.print(" L: ");
+    Serial.println(leftEchoTime / 148);
   }
   else if (side == 'R') {
     digitalWrite(ci_RightUltraPing, HIGH);
     delayMicroseconds(10);
     digitalWrite(ci_RightUltraPing, LOW);
     rightEchoTime = pulseIn(ci_RightUltraData, HIGH, 10000);
+    Serial.print(" R: ");
+    Serial.println(rightEchoTime / 148);
   }
   else if (side == 'T') {
     digitalWrite(ci_TopUltraPing, HIGH);
@@ -496,7 +504,7 @@ void Ping(char side)
 #ifdef DEBUG_ULTRASONIC
   if (side == 'L') echoTime = leftEchoTime;
   else if (side == 'R') echoTime = rightEchoTime;
-  else if (side == 'T') echoTime = TopEchoTime;
+  else if (side == 'T') echoTime = topEchoTime;
 
   Serial.print("Side: ");
   Serial.print(side);
