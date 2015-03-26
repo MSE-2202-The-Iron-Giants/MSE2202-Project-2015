@@ -1,6 +1,16 @@
 /*
+make variable that holds value of wheel speed
+
+both us sensors ping and compare and adjust the wheelspeed accordingling to each distance
+updates wheelspeed once per loop and else accordinglything roughout the code accordingly , 
+or is this not neccessary because we alreadying have functions?
 
 
+
+<<<<<<< HEAD
+
+=======
+>>>>>>> origin/Matt
  */
 
 #include <Servo.h>
@@ -11,7 +21,11 @@
 
 
 //*******uncoment to debug******
+<<<<<<< HEAD
 //#define DEBUG_ULTRASONIC
+=======
+#define DEBUG_ULTRASONIC
+>>>>>>> origin/Matt
 //#define DEBUG_ENCODERS
 
 
@@ -39,10 +53,17 @@ boolean bt_MotorsEnabled = false; //(true = motors turned on)
 //const int ci_CharlieplexLED2 = 5;
 //const int ci_CharlieplexLED3 = 6;
 //const int ci_CharlieplexLED4 = 7;
+<<<<<<< HEAD
 const int ci_LeftUltraPing = A0;   //input plug
 const int ci_LeftUltraData = A1;   //output plug
 const int ci_RightUltraPing = A2;
 const int ci_RightUltraData = A3; //needs to be a different pin then leftUltra
+=======
+const int ci_LeftUltraPing = A0;   //input plug yellow wire
+const int ci_LeftUltraData = A1;   //output plug orange wire
+const int ci_RightUltraPing = A2; //yellow
+const int ci_RightUltraData = A3; //orange
+>>>>>>> origin/Matt
 const int ci_TopUltraPing = 2;
 const int ci_TopUltraData = 3;
 const int ci_LiftMotor = 4;
@@ -55,8 +76,13 @@ const int ci_RightMotor = 11;
 const int ci_ModeButton = 12;
 const int ci_MotorEnableSwitch = 13; //this will show if motors are enebled or not on pin 13
 
+<<<<<<< HEAD
 const int ci_TopLightSensor = A3; //these two are for testing, likely these connections will go on Board one
 const int ci_BottomLightSensor = A2;
+=======
+const int ci_TopLightSensor = 4; //these two are for testing, likely these connections will go on Board one
+const int ci_BottomLightSensor = 5;
+>>>>>>> origin/Matt
 unsigned int topLightData;
 unsigned int bottomLightData;
 
@@ -100,7 +126,11 @@ void Drive(char Direction = 'F', int Speed = 300);
 void Slide(String Direction = "FL", int Speed = 300);
 void Lift(int);
 void Extend();
+<<<<<<< HEAD
 
+=======
+void Ping(char);
+>>>>>>> origin/Matt
 
 void setup()
 {
@@ -224,6 +254,7 @@ void loop()
           //ive set this up so we can just add a new case for every new stage of the course
           //*******PLEASE remember break; can't emphasize this enough #goodCoding
           switch (stageIndex) //stage of the course
+<<<<<<< HEAD
           {
             case 0:
               {
@@ -235,6 +266,23 @@ void loop()
                 Serial.print(topLightData);
                 Serial.print(" B: ");
                 Serial.println(bottomLightData);
+=======
+          {\
+            case 0:
+              {
+                Ping('R');
+                delay(100);
+                Ping('L');
+                delay(100);
+                Serial.println("blah");
+//                topLightData=analogRead(ci_TopLightSensor);
+//                bottomLightData=analogRead(ci_BottomLightSensor);
+//                
+//                Serial.print(" T: ");
+//                Serial.print(topLightData);
+//                Serial.print(" B: ");
+//                Serial.println(bottomLightData);
+>>>>>>> origin/Matt
                 
 
 //                Drive();
@@ -463,6 +511,7 @@ void Turn(char Direction)
 void Lift(int height)
 {
 }
+<<<<<<< HEAD
 
 void Extend()
 {
@@ -516,14 +565,61 @@ void PingIR()
 
 }
 
+=======
+>>>>>>> origin/Matt
 
+void Extend()
+{
+}
 
+//measure distance to target using ultrasonic sensor
+void Ping(char side)
+{
+  if (side == 'L') {
+    //Ping Ultrasonic
+    //Send the Ultrasonic Range Finder a 10 microsecond pulse per tech spec
+    digitalWrite(ci_LeftUltraPing, HIGH);
+    delayMicroseconds(10);  //The 10 microsecond pause where the pulse in "high"
+    digitalWrite(ci_LeftUltraPing, LOW);
+    //use command pulseIn to listen to Ultrasonic_Data pin to record the
+    //time that it takes from when the Pin goes HIGH until it goes LOW
+    leftEchoTime = pulseIn(ci_LeftUltraData, HIGH, 10000);
+    Serial.print(" L: ");
+    Serial.println(leftEchoTime / 148);
+  }
+  else if (side == 'R') {
+    digitalWrite(ci_RightUltraPing, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(ci_RightUltraPing, LOW);
+    rightEchoTime = pulseIn(ci_RightUltraData, HIGH, 10000);
+    Serial.print(" R: ");
+    Serial.println(rightEchoTime / 148);
+  }
+  else if (side == 'T') {
+    digitalWrite(ci_TopUltraPing, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(ci_TopUltraPing, LOW);
+    topEchoTime = pulseIn(ci_TopUltraData, HIGH, 10000);
+  }
 
+  // Print Sensor Readings
+#ifdef DEBUG_ULTRASONIC
+  if (side == 'L') echoTime = leftEchoTime;
+  else if (side == 'R') echoTime = rightEchoTime;
+  else if (side == 'T') echoTime = topEchoTime;
 
+  Serial.print("Side: ");
+  Serial.print(side);
+  Serial.print(", Time (microseconds): ");
+  Serial.print(echoTime, DEC);
+  Serial.print(", Inches: ");
+  Serial.print(echoTime / 148); //divide time by 148 to get distance in inches, gonna have to play around with the number
+  Serial.print(", cm: ");
+  Serial.println(echoTime / 58); //divide time by 58 to get distance in cm
+#endif
+}
 
+void PingIR()
+{
 
-
-
-
-
-
+}
