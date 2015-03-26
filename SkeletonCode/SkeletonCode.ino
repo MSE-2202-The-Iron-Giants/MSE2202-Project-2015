@@ -53,9 +53,9 @@ boolean bt_MotorsEnabled = false; //(true = motors turned on)
 const int ci_LeftUltraPing = A0;   //input plug yellow wire
 const int ci_LeftUltraData = A1;   //output plug orange wire
 const int ci_RightUltraPing = A2; //yellow
-const int ci_RightUltraData = A3; //orange had to switch this pin so our IR sensor has an analog NEED TO SWITCH ON BOT
-const int ci_TopUltraPing = 3; // both topUS pins will go on second board
-const int ci_TopUltraData = 3;
+const int ci_RightUltraData = 2; //orange had to switch this pin so our IR sensor has an analog NEED TO SWITCH ON BOT
+const int ci_TopUltraPing = 13; // both topUS pins will go on second board
+const int ci_TopUltraData = 13;
 const int ci_BeltMotor = 3;
 const int ci_LiftMotor = 4;
 const int ci_ExtendMotor = 5;
@@ -232,7 +232,7 @@ void loop()
       {
         if (bt_3_S_TimeUp) //Run after 3 seconds
         {
-          digitalWrite(8, HIGH);
+
 
 #ifdef DEBUG_ENCODERS
           frontMotorPos = encoder_FrontMotor.getPosition();
@@ -572,7 +572,7 @@ void PingIR()
 void Belt(String mode)
 {
   if (mode == "run") {
-    beltMotor.writeMicroseconds(1700);
+    beltMotor.writeMicroseconds(1900);
   }
   else if (mode == "stop") {
     beltMotor.writeMicroseconds(1500);
