@@ -42,7 +42,7 @@ I2CEncoder encoder_RightMotor;
 I2CEncoder encoder_LiftMotor;
 //possible have to add more encoders depending on which motors we use for x and y axis
 
-boolean bt_MotorsEnabled = false; //(true = motors turned on)
+boolean bt_MotorsEnabled = true; //(true = motors turned on)
 
 //pins, pin numbers will change once we know everything that needs a pin
 
@@ -70,8 +70,8 @@ const int ci_MotorEnableSwitch = 13; //this will show if motors are enebled or n
 
 
 
-const int ci_TopLightSensor = A3; //these two are for testing, likely these connections will go on Board one
-const int ci_BottomLightSensor = A2;
+//const int ci_TopLightSensor = A3; //these two are for testing, likely these connections will go on Board one
+//const int ci_BottomLightSensor = A2;
 unsigned int topLightData;
 unsigned int bottomLightData;
 
@@ -138,8 +138,8 @@ void setup()
   pinMode(ci_RightUltraData, INPUT);
 
   //set up light sensors
-  pinMode(ci_TopLightSensor, INPUT);
-  pinMode(ci_BottomLightSensor, INPUT);
+//  pinMode(ci_TopLightSensor, INPUT);
+//  pinMode(ci_BottomLightSensor, INPUT);
 
   // set up drive motors
   pinMode(ci_FrontMotor, OUTPUT);
