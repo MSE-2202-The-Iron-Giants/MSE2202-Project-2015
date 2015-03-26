@@ -53,8 +53,8 @@ boolean bt_MotorsEnabled = false; //(true = motors turned on)
 const int ci_LeftUltraPing = A0;   //input plug yellow wire
 const int ci_LeftUltraData = A1;   //output plug orange wire
 const int ci_RightUltraPing = A2; //yellow
-const int ci_RightUltraData = 2; //orange had to switch this pin so our IR sensor has an analog NEED TO SWITCH ON BOT
-const int ci_TopUltraPing = 2; // both topUS pins will go on second board
+const int ci_RightUltraData = A3; //orange had to switch this pin so our IR sensor has an analog NEED TO SWITCH ON BOT
+const int ci_TopUltraPing = 3; // both topUS pins will go on second board
 const int ci_TopUltraData = 3;
 const int ci_BeltMotor = 3;
 const int ci_LiftMotor = 4;
@@ -332,7 +332,8 @@ void loop()
         {
           Ping('L');
           delay(100);
-
+          Ping('R');
+          delay(100);
         }
         break;
       }
