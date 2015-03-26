@@ -28,6 +28,8 @@ Servo frontMotor;
 Servo backMotor;
 Servo leftMotor;
 Servo rightMotor;
+Servo liftMotor;
+Servo armMotor;
 Servo clawMotor;
 //add x and y tower motors
 
@@ -35,6 +37,7 @@ I2CEncoder encoder_FrontMotor;
 I2CEncoder encoder_BackMotor;
 I2CEncoder encoder_LeftMotor;
 I2CEncoder encoder_RightMotor;
+I2CEncoder encoder_LiftMotor;
 //possible have to add more encoders depending on which motors we use for x and y axis
 
 boolean bt_MotorsEnabled = false; //(true = motors turned on)
@@ -154,14 +157,17 @@ void setup()
   digitalWrite(ci_ModeButton, HIGH); //enables internal pullup resistor (button pushed = LOW)
 
   //have to initiate I2C motors in the order they are attached starting at the Aurdino
-  encoder_FrontMotor.init((25.93384736) * (1.0 / 3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
-  encoder_FrontMotor.setReversed(true);  // adjust for positive count when moving forward
+  
   encoder_RightMotor.init((25.93384736) * (1.0 / 3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
   encoder_RightMotor.setReversed(false);  // adjust for positive count when moving forward
   encoder_BackMotor.init((25.93384736) * (1.0 / 3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
   encoder_BackMotor.setReversed(false);  // adjust for positive count when moving forward
   encoder_LeftMotor.init((25.93384736) * (1.0 / 3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
   encoder_LeftMotor.setReversed(true);  // adjust for positive count when moving forward
+  encoder_FrontMotor.init((25.93384736) * (1.0 / 3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
+  encoder_FrontMotor.setReversed(true);  // adjust for positive count when moving forward
+  encoder_LiftMotor.init((25.93384736) * (1.0 / 3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
+  encoder_LiftMotor.setReversed(false);  // adjust for positive count when moving forward
 
 
   //this means position should be measured in cm, and speed in cm/minuite, but we likely wont be measuring speed
@@ -184,7 +190,7 @@ void loop()
     {
       bt_DoOnce = true;
       modeIndex++;
-      modeIndex = modeIndex & 7; // bitwise AND operator, this will reset mode to 0 if pressed 7 times, kinda useful not really haha
+      modeIndex = modeIndex & 7; // bitwise AND operator, this will reset mode to 0 if pressed 8 times, kinda useful not really haha
       ul_3_S_Timer = millis();
       bt_3_S_TimeUp = false;
     }
