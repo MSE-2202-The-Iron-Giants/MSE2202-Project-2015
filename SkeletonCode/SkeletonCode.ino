@@ -91,6 +91,7 @@ unsigned long backMotorPos;
 unsigned long leftMotorPos;
 unsigned long rightMotorPos;
 unsigned long clawMotorPos;
+unsigned long liftMotorPos;
 
 unsigned long echoTime; //general echoTime, usefull to have because you can set it equal to L,R,or T as done in ping function
 unsigned long leftEchoTime;
@@ -145,6 +146,9 @@ void setup()
   leftMotor.attach(ci_LeftMotor);
   pinMode(ci_RightMotor, OUTPUT);
   rightMotor.attach(ci_RightMotor);
+  
+  //set up lift motor
+  pinMode(ci_LiftMotor, OUTPUT);
 
   // set up arm motors
   pinMode(ci_ClawMotor, OUTPUT);
@@ -228,6 +232,7 @@ void loop()
           backMotorPos = encoder_BackMotor.getPosition();
           leftMotorPos = encoder_LeftMotor.getPosition();
           rightMotorPos = encoder_RightMotor.getPosition();
+          liftMotorPos = encoder_LiftMotor.getPosition();
 
           Serial.print("Encoders F: ");
           Serial.print(encoder_FrontMotor.getPosition());
@@ -497,6 +502,12 @@ void Turn(char Direction)
 
 void Lift(int height)
 {
+  //test encoder counts for moving up 10cm at a time, call that constant float or const unsigned long?
+  //number_of_encoder_counts=(height/10)*number_of_encoder_counts_for_10cm;
+  //if(liftMotorPos<number_of_encoder_counts)
+  {liftMotor.writeMicroseconds(1800);}
+  //else
+  //stop();
 }
 
 void Extend()
