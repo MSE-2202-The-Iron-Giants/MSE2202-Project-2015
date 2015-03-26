@@ -7,10 +7,7 @@ or is this not neccessary because we alreadying have functions?
 
 
 
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/Matt
  */
 
 #include <Servo.h>
@@ -32,6 +29,8 @@ Servo frontMotor;
 Servo backMotor;
 Servo leftMotor;
 Servo rightMotor;
+Servo liftMotor;
+Servo armMotor;
 Servo clawMotor;
 Servo beltMotor;
 //add x and y tower motors
@@ -40,6 +39,7 @@ I2CEncoder encoder_FrontMotor;
 I2CEncoder encoder_BackMotor;
 I2CEncoder encoder_LeftMotor;
 I2CEncoder encoder_RightMotor;
+I2CEncoder encoder_LiftMotor;
 //possible have to add more encoders depending on which motors we use for x and y axis
 
 boolean bt_MotorsEnabled = false; //(true = motors turned on)
@@ -53,19 +53,21 @@ boolean bt_MotorsEnabled = false; //(true = motors turned on)
 const int ci_LeftUltraPing = A0;   //input plug yellow wire
 const int ci_LeftUltraData = A1;   //output plug orange wire
 const int ci_RightUltraPing = A2; //yellow
-const int ci_RightUltraData = A3; //orange
-const int ci_TopUltraPing = 2;
+const int ci_RightUltraData = 2; //orange had to switch this pin so our IR sensor has an analog NEED TO SWITCH ON BOT
+const int ci_TopUltraPing = 2; // both topUS pins will go on second board
 const int ci_TopUltraData = 3;
+const int ci_BeltMotor = 3;
 const int ci_LiftMotor = 4;
 const int ci_ExtendMotor = 5;
 const int ci_ClawMotor = 6;
+const int ci_BumperSwitch = 7;
 const int ci_FrontMotor = 8;
 const int ci_BackMotor = 9;
 const int ci_LeftMotor = 10;
 const int ci_RightMotor = 11;
 const int ci_ModeButton = 12;
 const int ci_MotorEnableSwitch = 13; //this will show if motors are enebled or not on pin 13
-const int ci_BeltMotor = 7;
+
 
 
 const int ci_TopLightSensor = A3; //these two are for testing, likely these connections will go on Board one
@@ -99,13 +101,13 @@ unsigned long leftEchoTime;
 unsigned long rightEchoTime;
 unsigned long topEchoTime;
 
-unsigned int modeIndex = 1;
+unsigned int modeIndex = 0;
 unsigned int stageIndex = 0;
 
 unsigned long ul_3_S_Timer = 0;
 
-boolean bt_Heartbeat = true;
 boolean bt_3_S_TimeUp = false;
+boolean bt_Heartbeat = true;
 boolean bt_DoOnce = false;
 
 //function prototypes
@@ -114,7 +116,7 @@ void Slide(String Direction = "FL", int Speed = 300);
 void Lift(int);
 void Extend();
 void Ping(char);
-void Belt();
+void Belt(String mode = "run");
 
 void setup()
 {
@@ -154,22 +156,29 @@ void setup()
   clawMotor.attach(ci_ClawMotor);
   clawMotor.write(ci_ClawOpen); //opens claw off start because why not? first thing we'll grab is the waterbottlee right??
 
+
   //Set up Conveyor Belt Motor
   pinMode(ci_BeltMotor, OUTPUT);
   beltMotor.attach(ci_BeltMotor);
 
-  // set up motor enable switch
+
+  // set up motor enable switch and mode selection Button
+
   pinMode(ci_MotorEnableSwitch, INPUT);
+  pinMode(ci_ModeButton, INPUT);
+  digitalWrite(ci_ModeButton, HIGH); //enables internal pullup resistor (button pushed = LOW)
 
   //have to initiate I2C motors in the order they are attached starting at the Aurdino
+  encoder_LeftMotor.init((25.93384736) * (1.0 / 3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
+  encoder_LeftMotor.setReversed(true);  // adjust for positive count when moving forward
   encoder_FrontMotor.init((25.93384736) * (1.0 / 3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
   encoder_FrontMotor.setReversed(true);  // adjust for positive count when moving forward
   encoder_RightMotor.init((25.93384736) * (1.0 / 3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
   encoder_RightMotor.setReversed(false);  // adjust for positive count when moving forward
   encoder_BackMotor.init((25.93384736) * (1.0 / 3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
   encoder_BackMotor.setReversed(false);  // adjust for positive count when moving forward
-  encoder_LeftMotor.init((25.93384736) * (1.0 / 3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
-  encoder_LeftMotor.setReversed(true);  // adjust for positive count when moving forward
+  encoder_LiftMotor.init((25.93384736) * (1.0 / 3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
+  encoder_LiftMotor.setReversed(false);  // adjust for positive count when moving forward
 
 
   //this means position should be measured in cm, and speed in cm/minuite, but we likely wont be measuring speed
@@ -179,26 +188,27 @@ void setup()
 
 void loop()
 {
+  Serial.println(modeIndex);
   if ((millis() - ul_3_S_Timer) > 3000)
   {
     bt_3_S_TimeUp = true;
   }
 
   // button-based mode selection
-  if (CharliePlexM::ui_Btn) //need to figure out the button
+  if (digitalRead(ci_ModeButton) == LOW) //LOW means button is pushed
   {
     if (bt_DoOnce == false)
     {
       bt_DoOnce = true;
       modeIndex++;
-      modeIndex = modeIndex & 7; // bitwise AND, eaugin said it resests counter if you press 7 times or something
+      modeIndex = modeIndex & 7; // bitwise AND operator, this will reset mode to 0 if pressed 8 times, kinda useful not really haha
       ul_3_S_Timer = millis();
       bt_3_S_TimeUp = false;
     }
   }
   else
   {
-    bt_DoOnce = LOW; //why low not false? or do LOW and false both mean exactly 0? i know LOW is literrally just 0
+    bt_DoOnce = false;
   }
 
   // modes
@@ -220,8 +230,9 @@ void loop()
 
     case 1:
       {
-        //if(bt_3_S_TimeUp) //Run after 3 seconds
+        if (bt_3_S_TimeUp) //Run after 3 seconds
         {
+          digitalWrite(8, HIGH);
 
 #ifdef DEBUG_ENCODERS
           frontMotorPos = encoder_FrontMotor.getPosition();
@@ -243,13 +254,15 @@ void loop()
           //*******PLEASE remember break; can't emphasize this enough #goodCoding
           switch (stageIndex) //stage of the course
           {
+
             case 0:
               {
+
                 Ping('R');
                 delay(100);
-                Ping('L');
-                delay(100);
-                Serial.println("blah");
+                //                Ping('L');
+                //                delay(100);
+                //                Serial.println("blah");
                 //                topLightData=analogRead(ci_TopLightSensor);
                 //                bottomLightData=analogRead(ci_BottomLightSensor);
                 //
@@ -257,7 +270,6 @@ void loop()
                 //                Serial.print(topLightData);
                 //                Serial.print(" B: ");
                 //                Serial.println(bottomLightData);
-
 
 
                 //                Drive();
@@ -284,7 +296,6 @@ void loop()
 
             case 1:
               {
-
                 break;
               }
 
@@ -317,16 +328,33 @@ void loop()
 
     case 2:    //after 3 seconds
       {
+        if (bt_3_S_TimeUp)
+        {
+          Ping('L');
+          delay(100);
+
+        }
         break;
       }
 
     case 3:    // after 3 seconds
       {
+        if (bt_3_S_TimeUp)
+        {
+          Belt("run");
+          delay(2000);
+          Belt("stop");
+          delay(2000);
+        }
         break;
       }
 
     case 4:    //after 3 seconds.
       {
+        if (bt_3_S_TimeUp)
+        {
+
+        }
 
         break;
       }
@@ -540,9 +568,14 @@ void PingIR()
 
 }
 
-void Belt()
+void Belt(String mode)
 {
-  beltMotor.writeMicroseconds(1700);
+  if (mode == "run") {
+    beltMotor.writeMicroseconds(1700);
+  }
+  else if (mode == "stop") {
+    beltMotor.writeMicroseconds(1500);
+  }
 }
 
 
