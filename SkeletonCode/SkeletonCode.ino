@@ -2,7 +2,7 @@
 make variable that holds value of wheel speed
 
 both us sensors ping and compare and adjust the wheelspeed accordingling to each distance
-updates wheelspeed once per loop and else accordinglything roughout the code accordingly , 
+updates wheelspeed once per loop and else accordinglything roughout the code accordingly ,
 or is this not neccessary because we alreadying have functions?
 
 
@@ -21,11 +21,7 @@ or is this not neccessary because we alreadying have functions?
 
 
 //*******uncoment to debug******
-<<<<<<< HEAD
-//#define DEBUG_ULTRASONIC
-=======
 #define DEBUG_ULTRASONIC
->>>>>>> origin/Matt
 //#define DEBUG_ENCODERS
 
 
@@ -37,7 +33,7 @@ Servo backMotor;
 Servo leftMotor;
 Servo rightMotor;
 Servo clawMotor;
-Servo beltMotor; 
+Servo beltMotor;
 //add x and y tower motors
 
 I2CEncoder encoder_FrontMotor;
@@ -54,17 +50,10 @@ boolean bt_MotorsEnabled = false; //(true = motors turned on)
 //const int ci_CharlieplexLED2 = 5;
 //const int ci_CharlieplexLED3 = 6;
 //const int ci_CharlieplexLED4 = 7;
-<<<<<<< HEAD
-const int ci_LeftUltraPing = A0;   //input plug
-const int ci_LeftUltraData = A1;   //output plug
-const int ci_RightUltraPing = A2;
-const int ci_RightUltraData = A3; //needs to be a different pin then leftUltra
-=======
 const int ci_LeftUltraPing = A0;   //input plug yellow wire
 const int ci_LeftUltraData = A1;   //output plug orange wire
 const int ci_RightUltraPing = A2; //yellow
 const int ci_RightUltraData = A3; //orange
->>>>>>> origin/Matt
 const int ci_TopUltraPing = 2;
 const int ci_TopUltraData = 3;
 const int ci_LiftMotor = 4;
@@ -76,15 +65,11 @@ const int ci_LeftMotor = 10;
 const int ci_RightMotor = 11;
 const int ci_ModeButton = 12;
 const int ci_MotorEnableSwitch = 13; //this will show if motors are enebled or not on pin 13
-const int ci_BeltMotor = ; 
+const int ci_BeltMotor = 7;
 
-<<<<<<< HEAD
+
 const int ci_TopLightSensor = A3; //these two are for testing, likely these connections will go on Board one
 const int ci_BottomLightSensor = A2;
-=======
-const int ci_TopLightSensor = 4; //these two are for testing, likely these connections will go on Board one
-const int ci_BottomLightSensor = 5;
->>>>>>> origin/Matt
 unsigned int topLightData;
 unsigned int bottomLightData;
 
@@ -109,7 +94,7 @@ unsigned long leftMotorPos;
 unsigned long rightMotorPos;
 unsigned long clawMotorPos;
 
-unsigned long echoTime; //general echoTime, usefull to have because you can set it equal to L,R,or T as done in ping function 
+unsigned long echoTime; //general echoTime, usefull to have because you can set it equal to L,R,or T as done in ping function
 unsigned long leftEchoTime;
 unsigned long rightEchoTime;
 unsigned long topEchoTime;
@@ -128,15 +113,8 @@ void Drive(char Direction = 'F', int Speed = 300);
 void Slide(String Direction = "FL", int Speed = 300);
 void Lift(int);
 void Extend();
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
 void Ping(char);
->>>>>>> origin/Matt
-=======
 void Belt();
->>>>>>> origin/Tom
 
 void setup()
 {
@@ -156,11 +134,11 @@ void setup()
   pinMode(ci_LeftUltraData, INPUT);
   pinMode(ci_RightUltraPing, OUTPUT);
   pinMode(ci_RightUltraData, INPUT);
-  
+
   //set up light sensors
-  pinMode(ci_TopLightSensor,INPUT);
-  pinMode(ci_BottomLightSensor,INPUT);
-  
+  pinMode(ci_TopLightSensor, INPUT);
+  pinMode(ci_BottomLightSensor, INPUT);
+
   // set up drive motors
   pinMode(ci_FrontMotor, OUTPUT);
   frontMotor.attach(ci_FrontMotor);
@@ -175,11 +153,11 @@ void setup()
   pinMode(ci_ClawMotor, OUTPUT);
   clawMotor.attach(ci_ClawMotor);
   clawMotor.write(ci_ClawOpen); //opens claw off start because why not? first thing we'll grab is the waterbottlee right??
-  
+
   //Set up Conveyor Belt Motor
   pinMode(ci_BeltMotor, OUTPUT);
   beltMotor.attach(ci_BeltMotor);
-  
+
   // set up motor enable switch
   pinMode(ci_MotorEnableSwitch, INPUT);
 
@@ -264,20 +242,7 @@ void loop()
           //ive set this up so we can just add a new case for every new stage of the course
           //*******PLEASE remember break; can't emphasize this enough #goodCoding
           switch (stageIndex) //stage of the course
-<<<<<<< HEAD
           {
-            case 0:
-              {
-                
-                topLightData=analogRead(ci_TopLightSensor);
-                bottomLightData=analogRead(ci_BottomLightSensor);
-                
-                Serial.print(" T: ");
-                Serial.print(topLightData);
-                Serial.print(" B: ");
-                Serial.println(bottomLightData);
-=======
-          {\
             case 0:
               {
                 Ping('R');
@@ -285,34 +250,34 @@ void loop()
                 Ping('L');
                 delay(100);
                 Serial.println("blah");
-//                topLightData=analogRead(ci_TopLightSensor);
-//                bottomLightData=analogRead(ci_BottomLightSensor);
-//                
-//                Serial.print(" T: ");
-//                Serial.print(topLightData);
-//                Serial.print(" B: ");
-//                Serial.println(bottomLightData);
->>>>>>> origin/Matt
-                
+                //                topLightData=analogRead(ci_TopLightSensor);
+                //                bottomLightData=analogRead(ci_BottomLightSensor);
+                //
+                //                Serial.print(" T: ");
+                //                Serial.print(topLightData);
+                //                Serial.print(" B: ");
+                //                Serial.println(bottomLightData);
 
-//                Drive();
-//                delay(1000);
-//                Drive('R', 300);
-//                delay(1000);
-//                Drive('B', 300);
-//                delay(1000);
-//                Drive('L', 300);
-//                delay(1000);
-//                Drive('F', 300);
-//                delay(1000);
-//                Slide("FR", 300);
-//                delay(1000);
-//                Slide("BR", 300);
-//                delay(1000);
-//                Slide("BL", 300);
-//                delay(1000);
-//                Slide();
-//                delay(1000);
+
+
+                //                Drive();
+                //                delay(1000);
+                //                Drive('R', 300);
+                //                delay(1000);
+                //                Drive('B', 300);
+                //                delay(1000);
+                //                Drive('L', 300);
+                //                delay(1000);
+                //                Drive('F', 300);
+                //                delay(1000);
+                //                Slide("FR", 300);
+                //                delay(1000);
+                //                Slide("BR", 300);
+                //                delay(1000);
+                //                Slide("BL", 300);
+                //                delay(1000);
+                //                Slide();
+                //                delay(1000);
 
                 break; //remeber if you dont put this it will just go into the next case once current case is completed
               }
@@ -521,7 +486,7 @@ void Turn(char Direction)
 void Lift(int height)
 {
 }
-<<<<<<< HEAD
+
 
 void Extend()
 {
@@ -545,71 +510,6 @@ void Ping(char side)
     delayMicroseconds(10);
     digitalWrite(ci_RightUltraPing, LOW);
     rightEchoTime = pulseIn(ci_RightUltraData, HIGH, 10000);
-  }
-  else if (side == 'T') {
-    digitalWrite(ci_TopUltraPing, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(ci_TopUltraPing, LOW);
-    topEchoTime = pulseIn(ci_TopUltraData, HIGH, 10000);
-  }
-
-  // Print Sensor Readings
-#ifdef DEBUG_ULTRASONIC
-  if (side == 'L') echoTime = leftEchoTime;
-  else if (side == 'R') echoTime = rightEchoTime;
-  else if (side == 'T') echoTime = TopEchoTime;
-
-  Serial.print("Side: ");
-  Serial.print(side);
-  Serial.print(", Time (microseconds): ");
-  Serial.print(echoTime, DEC);
-  Serial.print(", Inches: ");
-  Serial.print(echoTime / 148); //divide time by 148 to get distance in inches, gonna have to play around with the number
-  Serial.print(", cm: ");
-  Serial.println(echoTime / 58); //divide time by 58 to get distance in cm
-#endif
-}
-
-void PingIR()
-{
-
-}
-
-<<<<<<< HEAD
-=======
->>>>>>> origin/Matt
-
-void Extend()
-{
-=======
-void Belt()
-{
- beltMotor.writeMicroseconds(1700); 
->>>>>>> origin/Tom
-}
-
-//measure distance to target using ultrasonic sensor
-void Ping(char side)
-{
-  if (side == 'L') {
-    //Ping Ultrasonic
-    //Send the Ultrasonic Range Finder a 10 microsecond pulse per tech spec
-    digitalWrite(ci_LeftUltraPing, HIGH);
-    delayMicroseconds(10);  //The 10 microsecond pause where the pulse in "high"
-    digitalWrite(ci_LeftUltraPing, LOW);
-    //use command pulseIn to listen to Ultrasonic_Data pin to record the
-    //time that it takes from when the Pin goes HIGH until it goes LOW
-    leftEchoTime = pulseIn(ci_LeftUltraData, HIGH, 10000);
-    Serial.print(" L: ");
-    Serial.println(leftEchoTime / 148);
-  }
-  else if (side == 'R') {
-    digitalWrite(ci_RightUltraPing, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(ci_RightUltraPing, LOW);
-    rightEchoTime = pulseIn(ci_RightUltraData, HIGH, 10000);
-    Serial.print(" R: ");
-    Serial.println(rightEchoTime / 148);
   }
   else if (side == 'T') {
     digitalWrite(ci_TopUltraPing, HIGH);
@@ -639,3 +539,11 @@ void PingIR()
 {
 
 }
+
+void Belt()
+{
+  beltMotor.writeMicroseconds(1700);
+}
+
+
+
