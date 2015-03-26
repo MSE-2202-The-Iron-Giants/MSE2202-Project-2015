@@ -2,7 +2,7 @@
 make variable that holds value of wheel speed
 
 both us sensors ping and compare and adjust the wheelspeed accordingling to each distance
-updates wheelspeed once per loop and else accordinglything roughout the code accordingly , 
+updates wheelspeed once per loop and else accordinglything roughout the code accordingly ,
 or is this not neccessary because we alreadying have functions?
 
 
@@ -48,12 +48,14 @@ boolean bt_MotorsEnabled = false; //(true = motors turned on)
 const int ci_LeftUltraPing = A0;   //input plug yellow wire
 const int ci_LeftUltraData = A1;   //output plug orange wire
 const int ci_RightUltraPing = A2; //yellow
-const int ci_RightUltraData = A3; //orange
-const int ci_TopUltraPing = 2;
+const int ci_RightUltraData = 2; //orange had to switch this pin so our IR sensor has an analog NEED TO SWITCH ON BOT
+const int ci_TopUltraPing = 2; // both topUS pins will go on second board
 const int ci_TopUltraData = 3;
+const int ci_ConveyerMotor = 3;
 const int ci_LiftMotor = 4;
 const int ci_ExtendMotor = 5;
 const int ci_ClawMotor = 6;
+const int ci_BumperSwitch = 7;
 const int ci_FrontMotor = 8;
 const int ci_BackMotor = 9;
 const int ci_LeftMotor = 10;
@@ -87,18 +89,18 @@ unsigned long leftMotorPos;
 unsigned long rightMotorPos;
 unsigned long clawMotorPos;
 
-unsigned long echoTime; //general echoTime, usefull to have because you can set it equal to L,R,or T as done in ping function 
+unsigned long echoTime; //general echoTime, usefull to have because you can set it equal to L,R,or T as done in ping function
 unsigned long leftEchoTime;
 unsigned long rightEchoTime;
 unsigned long topEchoTime;
 
-unsigned int modeIndex = 1;
+unsigned int modeIndex = 0;
 unsigned int stageIndex = 0;
 
 unsigned long ul_3_S_Timer = 0;
 
-boolean bt_Heartbeat = true;
 boolean bt_3_S_TimeUp = false;
+boolean bt_Heartbeat = true;
 boolean bt_DoOnce = false;
 
 //function prototypes
@@ -126,11 +128,11 @@ void setup()
   pinMode(ci_LeftUltraData, INPUT);
   pinMode(ci_RightUltraPing, OUTPUT);
   pinMode(ci_RightUltraData, INPUT);
-  
+
   //set up light sensors
-  pinMode(ci_TopLightSensor,INPUT);
-  pinMode(ci_BottomLightSensor,INPUT);
-  
+  pinMode(ci_TopLightSensor, INPUT);
+  pinMode(ci_BottomLightSensor, INPUT);
+
   // set up drive motors
   pinMode(ci_FrontMotor, OUTPUT);
   frontMotor.attach(ci_FrontMotor);
@@ -145,9 +147,11 @@ void setup()
   pinMode(ci_ClawMotor, OUTPUT);
   clawMotor.attach(ci_ClawMotor);
   clawMotor.write(ci_ClawOpen); //opens claw off start because why not? first thing we'll grab is the waterbottlee right??
-  
-  // set up motor enable switch
+
+  // set up motor enable switch and mode selection Button
   pinMode(ci_MotorEnableSwitch, INPUT);
+  pinMode(ci_ModeButton, INPUT);
+  digitalWrite(ci_ModeButton, HIGH); //enables internal pullup resistor (button pushed = LOW)
 
   //have to initiate I2C motors in the order they are attached starting at the Aurdino
   encoder_FrontMotor.init((25.93384736) * (1.0 / 3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
@@ -167,26 +171,27 @@ void setup()
 
 void loop()
 {
+  Serial.println(modeIndex);
   if ((millis() - ul_3_S_Timer) > 3000)
   {
     bt_3_S_TimeUp = true;
   }
 
   // button-based mode selection
-  if (CharliePlexM::ui_Btn) //need to figure out the button
+  if (digitalRead(ci_ModeButton) == LOW) //need to figure out the button
   {
     if (bt_DoOnce == false)
     {
       bt_DoOnce = true;
       modeIndex++;
-      modeIndex = modeIndex & 7; // bitwise AND, eaugin said it resests counter if you press 7 times or something
+      modeIndex = modeIndex & 7; // bitwise AND operator, this will reset mode to 0 if pressed 7 times, kinda useful not really haha
       ul_3_S_Timer = millis();
       bt_3_S_TimeUp = false;
     }
   }
   else
   {
-    bt_DoOnce = LOW; //why low not false? or do LOW and false both mean exactly 0? i know LOW is literrally just 0
+    bt_DoOnce = false; //why low not false? or do LOW and false both mean exactly 0? i know LOW is literrally just 0
   }
 
   // modes
@@ -208,8 +213,9 @@ void loop()
 
     case 1:
       {
-        //if(bt_3_S_TimeUp) //Run after 3 seconds
+        if (bt_3_S_TimeUp) //Run after 3 seconds
         {
+          digitalWrite(8, HIGH);
 
 #ifdef DEBUG_ENCODERS
           frontMotorPos = encoder_FrontMotor.getPosition();
@@ -230,48 +236,48 @@ void loop()
           //ive set this up so we can just add a new case for every new stage of the course
           //*******PLEASE remember break; can't emphasize this enough #goodCoding
           switch (stageIndex) //stage of the course
-          {\
+          { 
             case 0:
               {
-                Ping('R');
-                delay(100);
-                Ping('L');
-                delay(100);
-                Serial.println("blah");
-//                topLightData=analogRead(ci_TopLightSensor);
-//                bottomLightData=analogRead(ci_BottomLightSensor);
-//                
-//                Serial.print(" T: ");
-//                Serial.print(topLightData);
-//                Serial.print(" B: ");
-//                Serial.println(bottomLightData);
-                
+                digitalWrite(8,HIGH);
+                //                Ping('R');
+                //                delay(100);
+                //                Ping('L');
+                //                delay(100);
+                //                Serial.println("blah");
+                //                topLightData=analogRead(ci_TopLightSensor);
+                //                bottomLightData=analogRead(ci_BottomLightSensor);
+                //
+                //                Serial.print(" T: ");
+                //                Serial.print(topLightData);
+                //                Serial.print(" B: ");
+                //                Serial.println(bottomLightData);
 
-//                Drive();
-//                delay(1000);
-//                Drive('R', 300);
-//                delay(1000);
-//                Drive('B', 300);
-//                delay(1000);
-//                Drive('L', 300);
-//                delay(1000);
-//                Drive('F', 300);
-//                delay(1000);
-//                Slide("FR", 300);
-//                delay(1000);
-//                Slide("BR", 300);
-//                delay(1000);
-//                Slide("BL", 300);
-//                delay(1000);
-//                Slide();
-//                delay(1000);
+
+                //                Drive();
+                //                delay(1000);
+                //                Drive('R', 300);
+                //                delay(1000);
+                //                Drive('B', 300);
+                //                delay(1000);
+                //                Drive('L', 300);
+                //                delay(1000);
+                //                Drive('F', 300);
+                //                delay(1000);
+                //                Slide("FR", 300);
+                //                delay(1000);
+                //                Slide("BR", 300);
+                //                delay(1000);
+                //                Slide("BL", 300);
+                //                delay(1000);
+                //                Slide();
+                //                delay(1000);
 
                 break; //remeber if you dont put this it will just go into the next case once current case is completed
               }
 
             case 1:
               {
-
                 break;
               }
 
@@ -304,16 +310,29 @@ void loop()
 
     case 2:    //after 3 seconds
       {
+        if (bt_3_S_TimeUp)
+        {
+          digitalWrite(9, HIGH);
+
+        }
         break;
       }
 
     case 3:    // after 3 seconds
       {
+        if (bt_3_S_TimeUp)
+        {
+
+        }
         break;
       }
 
     case 4:    //after 3 seconds.
       {
+        if (bt_3_S_TimeUp)
+        {
+
+        }
 
         break;
       }
