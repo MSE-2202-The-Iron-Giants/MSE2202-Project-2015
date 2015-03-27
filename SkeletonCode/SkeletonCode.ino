@@ -116,8 +116,9 @@ void setup()
   pinMode(ci_ClawMotor, OUTPUT);
   clawMotor.attach(ci_ClawMotor);
   clawMotor.write(ci_ClawOpen); //opens claw off start because why not? first thing we'll grab is the waterbottlee right??
-
-  // set up motor enable switch
+  
+  
+   // set up motor enable switch
   pinMode(ci_MotorEnableSwitch, INPUT);
 
   //have to initiate I2C motors in the order they are attached starting at the Aurdino
@@ -378,6 +379,7 @@ void Turn(char Direction)
     rightMotor.writeMicroseconds(motorStopSpeed);
   }
 }
+
 
 //TurnAngle will turn to a specific angle (should ONLY be used when all that needs to be done is the turn, no other 
 //polling as it will not exit this function until the turn is complete
