@@ -97,6 +97,7 @@ unsigned long clawMotorPos;
 long currentEncCount = 0;
 double extendtime = 0;
 double distance = 0;
+double liftEnc=0;
 
 unsigned long echoTime; //general echoTime, usefull to have because you can set it equal to L,R,or T as done in ping function
 unsigned long leftEchoTime;
@@ -107,6 +108,7 @@ unsigned int variance = 0; //VARIANCE
 
 unsigned int modeIndex = 0;
 unsigned int stageIndex = 0;
+unsigned int liftcounter = 0;
 
 unsigned long ul_3_S_Timer = 0;
 
@@ -115,6 +117,7 @@ boolean bt_Heartbeat = true;
 boolean bt_DoOnce = false;
 boolean turning = false;
 boolean bumperHit = false;
+boolean lifted = false;
 
 //function prototypes
 void Stop(int);
@@ -534,12 +537,60 @@ void Stop(int time)
  #endif
  }*/
 
-void Lift(int height)
+void Lift()//140 encoder counts
 {
-
-
-
-
+  if(lifted=true)
+    return;
+  
+  currentEnc=encoder_LiftMotor.getPosition();
+  
+  else
+    {
+      if(liftcounter==0)
+      {
+         liftcounter++;
+         liftEnc=encoder_LiftMotor.getPosition();         
+      }
+      
+      if(currentEnc<liftEnc+20&&liftcounter==1)
+      {
+        liftMotor.writeMicroseconds(1600);
+        liftcounter++;
+      }
+      
+      else if(currentEnc<liftEnc+40&&liftcounter==2)
+      {
+        liftMotor.writeMicroseconds(1700);
+        liftcounter++; 
+      }
+      
+      else if(currentEnc<liftEnc+60&&liftcounter==3)
+      {
+        liftMotor.writeMicroseconds(1800);
+        liftcounter++; 
+      }
+      
+      else if(currentEnc<liftEnc+140&&liftcounter==4)
+      {
+        liftMotor.writeMicroseconds(2000);
+        liftcounter++;
+      }
+      
+      else if(currentEnc>=liftEnc+140&&liftcounter==5)
+      {
+        liftMotor.writeMicroseconds(1500)
+        liftcounter=0; 
+        lifted=true; 
+      }
+      
+      else
+      {
+         liftMotor.writeMicroseconds(1500); 
+      }
+      
+    }
+      
+   return;   
 }
 
 
