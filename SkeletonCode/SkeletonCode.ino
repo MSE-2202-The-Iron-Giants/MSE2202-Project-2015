@@ -261,7 +261,7 @@ void loop()
 
 
 #ifdef DEBUG_ENCODERS
-DebugEncoders();
+          DebugEncoders();
 #endif
 
           //ive set this up so we can just add a new case for every new stage of the course
@@ -271,63 +271,26 @@ DebugEncoders();
 
             case 0:
               {
+                Drive('F');
+                delay(1000);
+                Stop();
+                delay(700);
+                Drive('R');
+                delay(1000);
+                Stop();
+                delay(700);
+                Drive('B');
+                delay(1000);
+                Stop();
+                delay(700);
+                Drive('L');
+                delay(1000);
+                Stop();
+                delay(700);
 
-                Ping('R');
-                delay(100);
-                //                Ping('L');
-                //                delay(100);
-                //                Serial.println("blah");
-                //                topLightData=analogRead(ci_TopLightSensor);
-                //                bottomLightData=analogRead(ci_BottomLightSensor);
-                //
-                //                Serial.print(" T: ");
-                //                Serial.print(topLightData);
-                //                Serial.print(" B: ");
-                //                Serial.println(bottomLightData);
-
-
-                //                Drive();
-                //                delay(1000);
-                //                Drive('R', 300);
-                //                delay(1000);
-                //                Drive('B', 300);
-                //                delay(1000);
-                //                Drive('L', 300);
-                //                delay(1000);
-                //                Drive('F', 300);
-                //                delay(1000);
-                //                Slide("FR", 300);
-                //                delay(1000);
-                //                Slide("BR", 300);
-                //                delay(1000);
-                //                Slide("BL", 300);
-                //                delay(1000);
-                //                Slide();
-                //                delay(1000);
 
                 break; //remeber if you dont put this it will just go into the next case once current case is completed
               }
-
-            case 1:
-              {
-                break;
-              }
-
-            case 2:
-              {
-
-                break;
-              }
-
-            case 3:
-              {
-
-                break;
-              }
-
-
-
-
 
           }
 
@@ -463,9 +426,9 @@ void Drive_Distance(char side, int Speed, float distance) //Drive a specific dir
 {
   frontMotorPos = encoder_FrontMotor.getPosition(); //Get encoder position
   frontMotorPos = frontMotorPos + distance; //Set variable to encoder position + amount we want to move
-  while(encoder_FrontMotor.getPosition() > frontMotorPos) 
+  while (encoder_FrontMotor.getPosition() > frontMotorPos)
   {
-    Drive(side, Speed); //Drive 
+    Drive(side, Speed); //Drive
   }
 }
 
@@ -662,7 +625,6 @@ void Ping(char side)
 
 void PingIR()
 {
-
 }
 
 void Square() //Function traces walls to find objectives
@@ -675,13 +637,13 @@ void Square() //Function traces walls to find objectives
   //SQUARE TO WALL
   if (leftEchoTime > (rightEchoTime + variance)) // If left side of bot is too far from wall
   {
-    leftMotor.writeMicroseconds(1600);          //Adjust position
-    rightMotor.writeMicroseconds(1400);
+    leftMotor.writeMicroseconds(motorStopSpeed + 200);        //Adjust position
+    //rightMotor.writeMicroseconds(1400);
   }
   else if (rightEchoTime > (leftEchoTime + variance)) //Right side of bot is too far from wall
   {
-    rightMotor.writeMicroseconds(1600);          //Adjust position
-    leftMotor.writeMicroseconds(1400);
+    rightMotor.writeMicroseconds(motorStopSpeed + 200);        //Adjust position
+    //leftMotor.writeMicroseconds(1400);
   }
 
   else if (rightEchoTime == leftEchoTime) //Square to wall
@@ -691,7 +653,6 @@ void Square() //Function traces walls to find objectives
   }
 
 }//END OF SQUARE
-
 
 void Search()
 {
@@ -706,15 +667,12 @@ void Search()
     Drive_Distance('R', 200, 2.0); //Drive far enough to clear table
     Turn ('L'); //Turn Left to face table
   }
-  
+
   Square(); //Constantly square to wall
   Drive('R'); //Drive Right, along wall
 }//END OF SEARCH
 
 //My idea was to have something like : while bottomLightData ==0, Search(); so that seeing a light cancels the search function.
-
-
-
 
 
 //made this its own function because its used so much it will make code cleaner to read
