@@ -103,6 +103,8 @@ unsigned long leftEchoTime;
 unsigned long rightEchoTime;
 unsigned long topEchoTime;
 
+unsigned int variance = 0; //VARIANCE
+
 unsigned int modeIndex = 0;
 unsigned int stageIndex = 0;
 
@@ -112,6 +114,7 @@ boolean bt_3_S_TimeUp = false;
 boolean bt_Heartbeat = true;
 boolean bt_DoOnce = false;
 boolean turning = false;
+boolean bumperHit = false;
 
 //function prototypes
 void Stop(int);
@@ -125,6 +128,11 @@ void ExtendDist(double);
 void Retract();
 void Ping(char);
 void Belt(String mode = "run");
+void Square();
+void Search();
+void Drive_Distance(char side, int Speed, float distance);
+
+
 
 void DebugEncoders();
 
@@ -415,14 +423,7 @@ void Drive(char Direction, int Speed) //note i made Speed/Dirrection with a capi
   }
 
 #ifdef DEBUG_ENCODERS
-  Serial.print("Encoders F: ");
-  Serial.print(encoder_FrontMotor.getPosition());
-  Serial.print(", B: ");
-  Serial.print(encoder_BackMotor.getPosition());
-  Serial.print(", L: ");
-  Serial.print(encoder_LeftMotor.getPosition());
-  Serial.print(", R ");
-  Serial.println(encoder_RightMotor.getPosition());
+  DebugEncoders()
 #endif
 }
 
@@ -454,15 +455,18 @@ void Slide(String Direction, int Speed)
     rightMotor.writeMicroseconds(motorStopSpeed - Speed);
   }
 #ifdef DEBUG_ENCODERS
-  Serial.print("Encoders F: ");
-  Serial.print(encoder_FrontMotor.getPosition());
-  Serial.print(", B: ");
-  Serial.print(encoder_BackMotor.getPosition());
-  Serial.print(", L: ");
-  Serial.print(encoder_LeftMotor.getPosition());
-  Serial.print(", R ");
-  Serial.println(encoder_RightMotor.getPosition());
+  DebugEncoders();
 #endif
+}
+
+void Drive_Distance(char side, int Speed, float distance) //Drive a specific direction, speed, and distance. Drive_Distance ('R', 200, 2.0) = Drive right at 1700 for 2.0 encoder distance
+{
+  frontMotorPos = encoder_FrontMotor.getPosition(); //Get encoder position
+  frontMotorPos = frontMotorPos + distance; //Set variable to encoder position + amount we want to move
+  while(encoder_FrontMotor.getPosition() > frontMotorPos) 
+  {
+    Drive(side, Speed); //Drive 
+  }
 }
 
 void Turn(char Direction)//There is no length of time/distance designated for this function.  A break of the function needs to be introduced in your code
@@ -603,6 +607,16 @@ void Extend()
 
 }
 
+void Belt(String mode)
+{
+  if (mode == "run") {
+    beltMotor.writeMicroseconds(1900);
+  }
+  else if (mode == "stop") {
+    beltMotor.writeMicroseconds(1500);
+  }
+}
+
 //measure distance to target using ultrasonic sensor
 void Ping(char side)
 {
@@ -651,13 +665,23 @@ void PingIR()
 
 }
 
-void Belt(String mode)
+void Square() //Function traces walls to find objectives
 {
-  if (mode == "run") {
-    beltMotor.writeMicroseconds(1900);
+  //PING ULTRASONIC
+  Ping('L');
+  delay(100);
+  Ping('R');
+
+  //SQUARE TO WALL
+  if (leftEchoTime > (rightEchoTime + variance)) // If left side of bot is too far from wall
+  {
+    leftMotor.writeMicroseconds(1600);          //Adjust position
+    rightMotor.writeMicroseconds(1400);
   }
-  else if (mode == "stop") {
-    beltMotor.writeMicroseconds(1500);
+  else if (rightEchoTime > (leftEchoTime + variance)) //Right side of bot is too far from wall
+  {
+    rightMotor.writeMicroseconds(1600);          //Adjust position
+    leftMotor.writeMicroseconds(1400);
   }
 
   else if (rightEchoTime == leftEchoTime) //Square to wall
