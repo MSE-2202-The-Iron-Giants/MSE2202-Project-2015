@@ -363,6 +363,7 @@ void loop()
       {
         if (bt_3_S_TimeUp)
         {
+
           currentEncCount = encoder_LiftMotor.getPosition();
           Serial.println(currentEncCount);
           Serial.println(liftEnc);
@@ -377,6 +378,8 @@ void loop()
           else
 
           {
+
+            liftMotor.writeMicroseconds(1800);
             if (liftcounter == 0)
             {
               liftcounter = 1;
@@ -396,7 +399,7 @@ void loop()
             else if (currentEncCount >= liftEnc + 20) // 40 && liftcounter == 2)
 
             {
-              liftMotor.writeMicroseconds(1800);
+              liftMotor.writeMicroseconds(1900);
               liftcounter = 3;
             }
 
@@ -410,43 +413,44 @@ void loop()
 
 
             else if (currentEncCount >= liftEnc + 60)// && liftcounter == 4)
-
             {
+
               liftMotor.writeMicroseconds(2000);
               liftcounter = 5;
             }
-
 
             else if (currentEncCount >= liftEnc + 135)// && liftcounter == 5)
             {
               liftMotor.writeMicroseconds(1500);
               liftcounter = 0;
               lifted = true;
-
             }
+
 
             else
             {
               liftMotor.writeMicroseconds(1500);
             }
-
           }
 
         }
 
-        break;
-      }
+      
 
-    case 4:    //after 3 seconds.
-      {
-        if (bt_3_S_TimeUp)
-        {
-
-        }
-
-        break;
-      }
+      break;
   }
+
+case 4:    //after 3 seconds.
+  {
+    if (bt_3_S_TimeUp)
+    {
+      liftMotor.writeMicroseconds(1900);
+
+    }
+
+    break;
+  }
+}
 }
 
 //**************end of void loop() **************************************************************************************************************************************
