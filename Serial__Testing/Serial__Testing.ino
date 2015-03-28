@@ -27,7 +27,7 @@ void loop() {
 
   if (time-currentTime>2000)
   {
-    Serial.println(counter++);
+    Serial.print(counter++);
     currentTime=millis();
   }
 
