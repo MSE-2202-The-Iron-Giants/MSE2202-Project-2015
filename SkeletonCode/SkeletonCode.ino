@@ -196,13 +196,13 @@ void setup()
 
   //have to initiate I2C motors in the order they are attached starting at the Aurdino
   encoder_LeftMotor.init((25.93384736) * (1.0 / 3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
-  encoder_LeftMotor.setReversed(true);  // adjust for positive count when moving forward
+  encoder_LeftMotor.setReversed(false);  // adjust for positive count when moving forward
   encoder_FrontMotor.init((25.93384736) * (1.0 / 3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
-  encoder_FrontMotor.setReversed(true);  // adjust for positive count when moving forward
+  encoder_FrontMotor.setReversed(false);  // adjust for positive count when moving forward
   encoder_RightMotor.init((25.93384736) * (1.0 / 3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
-  encoder_RightMotor.setReversed(false);  // adjust for positive count when moving forward
+  encoder_RightMotor.setReversed(true);  // adjust for positive count when moving forward
   encoder_BackMotor.init((25.93384736) * (1.0 / 3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
-  encoder_BackMotor.setReversed(false);  // adjust for positive count when moving forward
+  encoder_BackMotor.setReversed(true);  // adjust for positive count when moving forward
   encoder_LiftMotor.init((25.93384736) * (1.0 / 3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
   encoder_LiftMotor.setReversed(true);  // adjust for positive count when moving forward
 
