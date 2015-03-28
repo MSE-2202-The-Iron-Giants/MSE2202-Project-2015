@@ -363,14 +363,8 @@ void loop()
       {
         if (bt_3_S_TimeUp)
         {
-
-          //extendMotor.writeMicroseconds(2000);
-          //           Serial.println("running");
-          //           extendMotor.writeMicroseconds(1000);
-
-
-          liftMotor.writeMicroseconds(2000);
-          Serial.println(encoder_LiftMotor.getPosition());
+          Lift();
+          Serial.println(liftcounter);
         }
 
         break;
@@ -580,11 +574,14 @@ void Stop(int time)
 
 void Lift()//140 encoder counts
 {
+  
+  
+  currentEncCount=encoder_LiftMotor.getPosition();
   if(lifted=true)
+  {
     return;
-  
-  currentEnc=encoder_LiftMotor.getPosition();
-  
+  }
+    
   else
     {
       if(liftcounter==0)
@@ -593,33 +590,33 @@ void Lift()//140 encoder counts
          liftEnc=encoder_LiftMotor.getPosition();         
       }
       
-      if(currentEnc<liftEnc+20&&liftcounter==1)
+      if(currentEncCount<liftEnc+20&&liftcounter==1)
       {
         liftMotor.writeMicroseconds(1600);
         liftcounter++;
       }
       
-      else if(currentEnc<liftEnc+40&&liftcounter==2)
+      else if(currentEncCount<liftEnc+40&&liftcounter==2)
       {
         liftMotor.writeMicroseconds(1700);
         liftcounter++; 
       }
       
-      else if(currentEnc<liftEnc+60&&liftcounter==3)
+      else if(currentEncCount<liftEnc+60&&liftcounter==3)
       {
         liftMotor.writeMicroseconds(1800);
         liftcounter++; 
       }
       
-      else if(currentEnc<liftEnc+140&&liftcounter==4)
+      else if(currentEncCount<liftEnc+140&&liftcounter==4)
       {
         liftMotor.writeMicroseconds(2000);
         liftcounter++;
       }
       
-      else if(currentEnc>=liftEnc+140&&liftcounter==5)
+      else if(currentEncCount>=liftEnc+140&&liftcounter==5)
       {
-        liftMotor.writeMicroseconds(1500)
+        liftMotor.writeMicroseconds(1500);
         liftcounter=0; 
         lifted=true; 
       }
