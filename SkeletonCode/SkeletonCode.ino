@@ -659,7 +659,39 @@ void Belt(String mode)
   else if (mode == "stop") {
     beltMotor.writeMicroseconds(1500);
   }
-}
+
+  else if (rightEchoTime == leftEchoTime) //Square to wall
+  {
+    rightMotor.writeMicroseconds(motorStopSpeed);        // do nothing
+    leftMotor.writeMicroseconds(motorStopSpeed);
+  }
+
+}//END OF SQUARE
+
+
+void Search()
+{
+  if (bumperHit) //Hit a wall
+  {
+    Drive_Distance('L', 200, 2.0); // "back up" to provide room to turn
+    Turn('R'); //Turn right
+  }
+
+  if (rightEchoTime > 100)// Where 100 is arbitrary large number, which would indicate that bot has passed the table boundary
+  {
+    Drive_Distance('R', 200, 2.0); //Drive far enough to clear table
+    Turn ('L'); //Turn Left to face table
+  }
+  
+  Square(); //Constantly square to wall
+  Drive('R'); //Drive Right, along wall
+}//END OF SEARCH
+
+//My idea was to have something like : while bottomLightData ==0, Search(); so that seeing a light cancels the search function.
+
+
+
+
 
 //made this its own function because its used so much it will make code cleaner to read
 void DebugEncoders() {
