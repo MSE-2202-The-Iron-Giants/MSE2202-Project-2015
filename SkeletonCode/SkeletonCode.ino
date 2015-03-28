@@ -1,13 +1,13 @@
 /*
 make variable that holds value of wheel speed
- 
+
  both us sensors ping and compare and adjust the wheelspeed accordingling to each distance
  updates wheelspeed once per loop and else accordinglything roughout the code accordingly ,
  or is this not neccessary because we alreadying have functions?
- 
- 
- 
- 
+
+
+
+
  */
 
 #include <Servo.h>
@@ -89,15 +89,14 @@ unsigned int frontMotorSpeed;
 unsigned int backMotorSpeed;
 unsigned int leftMotorSpeed;
 unsigned int rightMotorSpeed;
-//unsigned int motorStopSpeed = 1500;
 unsigned long frontMotorPos;
 unsigned long backMotorPos;
 unsigned long leftMotorPos;
 unsigned long rightMotorPos;
 unsigned long clawMotorPos;
-long currentEncCount=0;
-double extendtime=0;
-double distance=0;
+long currentEncCount = 0;
+double extendtime = 0;
+double distance = 0;
 
 unsigned long echoTime; //general echoTime, usefull to have because you can set it equal to L,R,or T as done in ping function
 unsigned long leftEchoTime;
@@ -115,17 +114,19 @@ boolean bt_DoOnce = false;
 boolean turning = false;
 
 //function prototypes
-void Drive(char Direction = 'F', int Speed = 300);
-void Turn(char);
 void Stop(int);
-void Turn90(char);
+void Drive(char Direction = 'F', int Speed = 300);
 void Slide(String Direction = "FL", int Speed = 300);
+void Turn(char);
+void Turn90(char);
 void Lift(int);
 void Extend();
 void ExtendDist(double);
 void Retract();
 void Ping(char);
 void Belt(String mode = "run");
+
+void DebugEncoders();
 
 void setup()
 {
@@ -166,11 +167,11 @@ void setup()
   clawMotor.write(ci_ClawOpen); //opens claw off start because why not? first thing we'll grab is the waterbottlee right??
 
   // set up arm motor
-  pinMode(ci_ExtendMotor,OUTPUT);
+  pinMode(ci_ExtendMotor, OUTPUT);
   extendMotor.attach(ci_ExtendMotor);
 
   //set up lift motor
-  pinMode(ci_LiftMotor,OUTPUT);
+  pinMode(ci_LiftMotor, OUTPUT);
   liftMotor.attach(ci_LiftMotor);
 
 
@@ -237,150 +238,138 @@ void loop()
 
   switch (modeIndex) //mode to operate in
   {
-  case 0:    //Robot stopped
-    {
-      break;
-    }
+    case 0:    //Robot stopped
+      {
+        break;
+      }
 
     //******************RUNNING MODE***********************************************************
     //*****************************************************************************************
 
-  case 1:
-    {
-      if (bt_3_S_TimeUp) //Run after 3 seconds
+    case 1:
       {
+        if (bt_3_S_TimeUp) //Run after 3 seconds
+        {
 
 
 #ifdef DEBUG_ENCODERS
-        frontMotorPos = encoder_FrontMotor.getPosition();
-        backMotorPos = encoder_BackMotor.getPosition();
-        leftMotorPos = encoder_LeftMotor.getPosition();
-        rightMotorPos = encoder_RightMotor.getPosition();
-
-        Serial.print("Encoders F: ");
-        Serial.print(encoder_FrontMotor.getPosition());
-        Serial.print(", B: ");
-        Serial.print(encoder_BackMotor.getPosition());
-        Serial.print(", L: ");
-        Serial.println(leftMotorPos, DEC);
-        Serial.print(", R: ");
-        Serial.println(RightMotorPos, DEC);
+DebugEncoders();
 #endif
 
-        //ive set this up so we can just add a new case for every new stage of the course
-        //*******PLEASE remember break; can't emphasize this enough #goodCoding
-        switch (stageIndex) //stage of the course
-        {
-
-        case 0:
+          //ive set this up so we can just add a new case for every new stage of the course
+          //*******PLEASE remember break; can't emphasize this enough #goodCoding
+          switch (stageIndex) //stage of the course
           {
 
-            Ping('R');
-            delay(100);
-            //                Ping('L');
-            //                delay(100);
-            //                Serial.println("blah");
-            //                topLightData=analogRead(ci_TopLightSensor);
-            //                bottomLightData=analogRead(ci_BottomLightSensor);
-            //
-            //                Serial.print(" T: ");
-            //                Serial.print(topLightData);
-            //                Serial.print(" B: ");
-            //                Serial.println(bottomLightData);
+            case 0:
+              {
+
+                Ping('R');
+                delay(100);
+                //                Ping('L');
+                //                delay(100);
+                //                Serial.println("blah");
+                //                topLightData=analogRead(ci_TopLightSensor);
+                //                bottomLightData=analogRead(ci_BottomLightSensor);
+                //
+                //                Serial.print(" T: ");
+                //                Serial.print(topLightData);
+                //                Serial.print(" B: ");
+                //                Serial.println(bottomLightData);
 
 
-            //                Drive();
-            //                delay(1000);
-            //                Drive('R', 300);
-            //                delay(1000);
-            //                Drive('B', 300);
-            //                delay(1000);
-            //                Drive('L', 300);
-            //                delay(1000);
-            //                Drive('F', 300);
-            //                delay(1000);
-            //                Slide("FR", 300);
-            //                delay(1000);
-            //                Slide("BR", 300);
-            //                delay(1000);
-            //                Slide("BL", 300);
-            //                delay(1000);
-            //                Slide();
-            //                delay(1000);
+                //                Drive();
+                //                delay(1000);
+                //                Drive('R', 300);
+                //                delay(1000);
+                //                Drive('B', 300);
+                //                delay(1000);
+                //                Drive('L', 300);
+                //                delay(1000);
+                //                Drive('F', 300);
+                //                delay(1000);
+                //                Slide("FR", 300);
+                //                delay(1000);
+                //                Slide("BR", 300);
+                //                delay(1000);
+                //                Slide("BL", 300);
+                //                delay(1000);
+                //                Slide();
+                //                delay(1000);
 
-            break; //remeber if you dont put this it will just go into the next case once current case is completed
+                break; //remeber if you dont put this it will just go into the next case once current case is completed
+              }
+
+            case 1:
+              {
+                break;
+              }
+
+            case 2:
+              {
+
+                break;
+              }
+
+            case 3:
+              {
+
+                break;
+              }
+
+
+
+
+
           }
-
-        case 1:
-          {
-            break;
-          }
-
-        case 2:
-          {
-
-            break;
-          }
-
-        case 3:
-          {
-
-            break;
-          }
-
-
 
 
 
         }
-
-
-
+        break;
       }
-      break;
-    }
 
     //******************END OF RUNNING MODE****************************************************
     //*****************************************************************************************
 
-  case 2:    //after 3 seconds
-    {
-      if (bt_3_S_TimeUp)
+    case 2:    //after 3 seconds
       {
-        Ping('L');
-        delay(100);
-        Ping('R');
-        delay(100);
-      }
-      break;
-    }
-
-  case 3:    // after 3 seconds
-    {
-      if (bt_3_S_TimeUp)
-      {
-               
-        //extendMotor.writeMicroseconds(2000); 
-        //           Serial.println("running"); 
-        //           extendMotor.writeMicroseconds(1000);
-
-
-        liftMotor.writeMicroseconds(2000);
-        Serial.println(encoder_LiftMotor.getPosition());
+        if (bt_3_S_TimeUp)
+        {
+          Ping('L');
+          delay(100);
+          Ping('R');
+          delay(100);
+        }
+        break;
       }
 
-      break;
-    }
-
-  case 4:    //after 3 seconds.
-    {
-      if (bt_3_S_TimeUp)
+    case 3:    // after 3 seconds
       {
+        if (bt_3_S_TimeUp)
+        {
 
+          //extendMotor.writeMicroseconds(2000);
+          //           Serial.println("running");
+          //           extendMotor.writeMicroseconds(1000);
+
+
+          liftMotor.writeMicroseconds(2000);
+          Serial.println(encoder_LiftMotor.getPosition());
+        }
+
+        break;
       }
 
-      break;
-    }
+    case 4:    //after 3 seconds.
+      {
+        if (bt_3_S_TimeUp)
+        {
+
+        }
+
+        break;
+      }
   }
 }
 
@@ -476,50 +465,16 @@ void Slide(String Direction, int Speed)
 #endif
 }
 
-//Turn turns about centre of base, direction is dirrection front will turn -> L = counter clockwise, R = clockwise
-void Turn90(char Direction)//this function will turn the robot 90 degrees from where it starts. 
-{
-  frontMotorPos=encoder_FrontMotor.getPosition();//continuously updated
-
-  if(turning==false){
-    currentEncCount=encoder_FrontMotor.getPosition();
-    turning=true;
-  }
-
-  if(Direction=='L'&&frontMotorPos>currentEncCount+1.5){//the 1.5 value is arbitrary. the encoder count for 90 degrees is what should go in
-    frontMotor.writeMicroseconds(1300);
-    backMotor.writeMicroseconds(1700);
-    leftMotor.writeMicroseconds(1300);//correct motor directions?
-    rightMotor.writeMicroseconds(1700);
-  }
-  else if(Direction=='R'&&frontMotorPos>currentEncCount+1.5){
-    frontMotor.writeMicroseconds(1700);
-    backMotor.writeMicroseconds(1300);
-    leftMotor.writeMicroseconds(1700);
-    rightMotor.writeMicroseconds(1300);
-  }
-
-  if(turning==true&&frontMotorPos==currentEncCount+1.5){
-    turning=false; 
-    frontMotor.writeMicroseconds(1500);//stops the robot
-    backMotor.writeMicroseconds(1500);
-    leftMotor.writeMicroseconds(1500);
-    rightMotor.writeMicroseconds(1500);
-    return;//breaks out of the function
-  }
-
-}
-
 void Turn(char Direction)//There is no length of time/distance designated for this function.  A break of the function needs to be introduced in your code
 {
 
-  if(Direction=='L'){
+  if (Direction == 'L') {
     frontMotor.writeMicroseconds(1300);//possible need to change the direction of these motors.
     backMotor.writeMicroseconds(1700);
     leftMotor.writeMicroseconds(1300);
     rightMotor.writeMicroseconds(1700);
   }
-  else if(Direction=='R'){
+  else if (Direction == 'R') {
     frontMotor.writeMicroseconds(1700);
     backMotor.writeMicroseconds(1300);
     leftMotor.writeMicroseconds(1700);
@@ -535,6 +490,40 @@ void Turn(char Direction)//There is no length of time/distance designated for th
   Serial.print(", R ");
   Serial.println(encoder_RightMotor.getPosition());
 #endif
+}
+
+//Turn turns about centre of base, direction is dirrection front will turn -> L = counter clockwise, R = clockwise
+void Turn90(char Direction)//this function will turn the robot 90 degrees from where it starts.
+{
+  frontMotorPos = encoder_FrontMotor.getPosition(); //continuously updated
+
+  if (turning == false) {
+    currentEncCount = encoder_FrontMotor.getPosition();
+    turning = true;
+  }
+
+  if (Direction == 'L' && frontMotorPos > currentEncCount + 1.5) { //the 1.5 value is arbitrary. the encoder count for 90 degrees is what should go in
+    frontMotor.writeMicroseconds(1300);
+    backMotor.writeMicroseconds(1700);
+    leftMotor.writeMicroseconds(1300);//correct motor directions?
+    rightMotor.writeMicroseconds(1700);
+  }
+  else if (Direction == 'R' && frontMotorPos > currentEncCount + 1.5) {
+    frontMotor.writeMicroseconds(1700);
+    backMotor.writeMicroseconds(1300);
+    leftMotor.writeMicroseconds(1700);
+    rightMotor.writeMicroseconds(1300);
+  }
+
+  if (turning == true && frontMotorPos == currentEncCount + 1.5) {
+    turning = false;
+    frontMotor.writeMicroseconds(1500);//stops the robot
+    backMotor.writeMicroseconds(1500);
+    leftMotor.writeMicroseconds(1500);
+    rightMotor.writeMicroseconds(1500);
+    return;//breaks out of the function
+  }
+
 }
 
 void Stop(int time)
@@ -590,28 +579,28 @@ void Lift(int height)
 void ExtendDist(double distance)
 {
   //at 2000, arm extends at 1.70 in/sec or 4.32 cm/sec
-  extendtime=distance/4.32;
-  
+  extendtime = distance / 4.32;
+
   extendMotor.writeMicroseconds(2000);
   delay(extendtime);
   extendMotor.writeMicroseconds(1500);
-  return;  
+  return;
 }
 
 void Retract(double distance)//if extended a variable distance, main code needs to include an edit to the double variable "distance"
 {
-  extendtime=distance/4.32;
+  extendtime = distance / 4.32;
 
   extendMotor.writeMicroseconds(1000);
   delay(extendtime);
   extendMotor.writeMicroseconds(1500);
-  return;  
+  return;
 }
 
 void Extend()
 {
-  
-  
+
+
 }
 
 //measure distance to target using ultrasonic sensor
@@ -672,6 +661,22 @@ void Belt(String mode)
   }
 }
 
+//made this its own function because its used so much it will make code cleaner to read
+void DebugEncoders() {
+  frontMotorPos = encoder_FrontMotor.getPosition();
+  backMotorPos = encoder_BackMotor.getPosition();
+  leftMotorPos = encoder_LeftMotor.getPosition();
+  rightMotorPos = encoder_RightMotor.getPosition();
+
+  Serial.print("Encoders F: ");
+  Serial.print(encoder_FrontMotor.getPosition());
+  Serial.print(", B: ");
+  Serial.print(encoder_BackMotor.getPosition());
+  Serial.print(", L: ");
+  Serial.println(leftMotorPos, DEC);
+  Serial.print(", R: ");
+  Serial.println(rightMotorPos, DEC);
+}
 
 
 
