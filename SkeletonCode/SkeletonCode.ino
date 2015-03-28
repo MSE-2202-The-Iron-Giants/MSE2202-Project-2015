@@ -104,7 +104,7 @@ unsigned long leftEchoTime;
 unsigned long rightEchoTime;
 unsigned long topEchoTime;
 
-unsigned int variance = 0; //VARIANCE
+unsigned int variance = 1; //VARIANCE
 
 unsigned int modeIndex = 0;
 unsigned int stageIndex = 0;
@@ -290,6 +290,22 @@ void loop()
                 delay(1000);
                 Stop();
                 delay(700);
+                Slide("FL");
+                delay(1000);
+                Stop();
+                delay(700);
+                Slide("FR");
+                delay(1000);
+                Stop();
+                delay(700);
+                Slide("BR");
+                delay(1000);
+                Stop();
+                delay(700);
+                Slide("BL");
+                delay(1000);
+                Stop();
+                delay(700);
 
 
                 break; //remeber if you dont put this it will just go into the next case once current case is completed
@@ -310,10 +326,35 @@ void loop()
       {
         if (bt_3_S_TimeUp)
         {
+
+          
+          //Drive('R');
+          
+          frontMotor.writeMicroseconds(1700);
+          backMotor.writeMicroseconds(1700);
+          
           Ping('L');
           delay(100);
           Ping('R');
-          delay(100);
+
+          //SQUARE TO WALL
+          if (leftEchoTime > (rightEchoTime + variance)) // If left side of bot is too far from wall
+          {
+            leftMotor.writeMicroseconds(motorStopSpeed + 200);        //Adjust position
+            //rightMotor.writeMicroseconds(1400);
+          }
+          else if (rightEchoTime > (leftEchoTime + variance)) //Right side of bot is too far from wall
+          {
+            rightMotor.writeMicroseconds(motorStopSpeed + 200);        //Adjust position
+            //leftMotor.writeMicroseconds(1400);
+          }
+
+          else if (rightEchoTime == leftEchoTime) //Square to wall
+          {
+            rightMotor.writeMicroseconds(motorStopSpeed);        // do nothing
+            leftMotor.writeMicroseconds(motorStopSpeed);
+          }
+
         }
         break;
       }
