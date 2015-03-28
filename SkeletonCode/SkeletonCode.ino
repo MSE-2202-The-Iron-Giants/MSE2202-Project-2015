@@ -575,7 +575,7 @@ void Stop(int time)
 void Lift()
 {
 
-  {
+  
     currentEncCount = encoder_LiftMotor.getPosition();
     if (lifted = true)
      {return;}
@@ -638,7 +638,7 @@ void Lift()
     }
 
     return;
-  }
+  
 }
 
 
