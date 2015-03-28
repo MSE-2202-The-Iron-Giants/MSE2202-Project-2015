@@ -217,7 +217,7 @@ void setup()
 
 void loop()
 {
-  //Serial.println(modeIndex);
+  Serial.println(modeIndex);
   if ((millis() - ul_3_S_Timer) > 3000)
   {
     bt_3_S_TimeUp = true;
@@ -363,6 +363,7 @@ void loop()
       {
         if (bt_3_S_TimeUp)
         {
+<<<<<<< HEAD
             currentEncCount = encoder_LiftMotor.getPosition();
             Serial.println(currentEncCount);
                   
@@ -427,20 +428,96 @@ void loop()
             }
           
         }
+=======
 
-        break;
-      }
+          currentEncCount = encoder_LiftMotor.getPosition();
+          Serial.println(currentEncCount);
+          Serial.println(liftEnc);
+          Serial.print("liftcounter :");
+          Serial.println(liftcounter);
 
-    case 4:    //after 3 seconds.
-      {
-        if (bt_3_S_TimeUp)
-        {
+          if (lifted == true)
+          {
+            return;
+          }
+
+          else
+
+          {
+
+            liftMotor.writeMicroseconds(1800);
+            if (liftcounter == 0)
+            {
+              liftcounter = 1;
+              liftEnc = encoder_LiftMotor.getPosition();
+              liftMotor.writeMicroseconds(1800);
+            }
+
+
+            else if (currentEncCount >= 0)// liftEnc + 20 && liftcounter == 1)
+
+            {
+              liftMotor.writeMicroseconds(1800);
+              liftcounter = 2;
+            }
+
+
+            else if (currentEncCount >= liftEnc + 20) // 40 && liftcounter == 2)
+
+            {
+              liftMotor.writeMicroseconds(1900);
+              liftcounter = 3;
+            }
+
+
+            else if (currentEncCount >= liftEnc + 40)// && liftcounter == 3)
+
+            {
+              liftMotor.writeMicroseconds(1900);
+              liftcounter = 4;
+            }
+
+
+            else if (currentEncCount >= liftEnc + 60)// && liftcounter == 4)
+            {
+
+              liftMotor.writeMicroseconds(2000);
+              liftcounter = 5;
+            }
+>>>>>>> origin/Dev
+
+            else if (currentEncCount >= liftEnc + 135)// && liftcounter == 5)
+            {
+              liftMotor.writeMicroseconds(1500);
+              liftcounter = 0;
+              lifted = true;
+            }
+
+
+            else
+            {
+              liftMotor.writeMicroseconds(1500);
+            }
+          }
 
         }
 
-        break;
-      }
+      
+
+      break;
   }
+
+case 4:    //after 3 seconds.
+  {
+    if (bt_3_S_TimeUp)
+    {
+      liftMotor.writeMicroseconds(1900);
+
+    }
+
+    break;
+  }
+}
 }
 
 //**************end of void loop() **************************************************************************************************************************************
@@ -636,70 +713,84 @@ void Stop(int time)
 void Lift()
 {
 
+<<<<<<< HEAD
   {
     currentEncCount = encoder_LiftMotor.getPosition();
     if (lifted = true)
      {return;}
+=======
+>>>>>>> origin/Dev
 
-    else
+  currentEncCount = encoder_LiftMotor.getPosition();
+  if (lifted = true)
+  {
+    return;
+  }
+
+  else
+
+  {
+    if (liftcounter == 0)
+    {
+      liftcounter++;
+      liftEnc = encoder_LiftMotor.getPosition();
+    }
+
+
+    if (currentEncCount < liftEnc + 20 && liftcounter == 1)
 
     {
-      if (liftcounter == 0)
-      {
-        liftcounter++;
-        liftEnc = encoder_LiftMotor.getPosition();
-      }
+      liftMotor.writeMicroseconds(1800);
+      liftcounter++;
+    }
 
 
-      if (currentEncCount < liftEnc + 20 && liftcounter == 1)
+    //      else if (currentEncCount < liftEnc + 40 && liftcounter == 2)
+    //
+    //      {
+    //        liftMotor.writeMicroseconds(1700);
+    //        liftcounter++;
+    //      }
+    //
+    //
+    else if (currentEncCount < liftEnc + 50 && liftcounter == 2)
 
-      {
-        liftMotor.writeMicroseconds(1800);
-        liftcounter++;
-      }
-
-
-//      else if (currentEncCount < liftEnc + 40 && liftcounter == 2)
-//
-//      {
-//        liftMotor.writeMicroseconds(1700);
-//        liftcounter++;
-//      }
-//
-//
-      else if (currentEncCount < liftEnc + 50 && liftcounter == 2)
-
-      {
-        liftMotor.writeMicroseconds(1900);
-        liftcounter++;
-      }
+    {
+      liftMotor.writeMicroseconds(1900);
+      liftcounter++;
+    }
 
 
-      else if (currentEncCount < liftEnc + 140 && liftcounter == 4)
+    else if (currentEncCount < liftEnc + 140 && liftcounter == 4)
 
-      {
-        liftMotor.writeMicroseconds(2000);
-        liftcounter++;
-      }
+    {
+      liftMotor.writeMicroseconds(2000);
+      liftcounter++;
+    }
 
 
-      else if (currentEncCount >= liftEnc + 140 && liftcounter == 5)
-      {
-        liftMotor.writeMicroseconds(1500);
-        liftcounter = 0;
-        lifted = true;
-
-      }
-
-      else
-      {
-        liftMotor.writeMicroseconds(1500);
-      }
+    else if (currentEncCount >= liftEnc + 140 && liftcounter == 5)
+    {
+      liftMotor.writeMicroseconds(1500);
+      liftcounter = 0;
+      lifted = true;
 
     }
 
+    else
+    {
+      liftMotor.writeMicroseconds(1500);
+    }
+
+<<<<<<< HEAD
     return;
   }
+=======
+  }
+
+  return;
+
+>>>>>>> origin/Dev
 }
 
 
