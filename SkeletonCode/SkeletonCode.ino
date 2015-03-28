@@ -97,7 +97,7 @@ unsigned long clawMotorPos;
 long currentEncCount = 0;
 double extendtime = 0;
 double distance = 0;
-double liftEnc=0;
+double liftEnc = 0;
 
 unsigned long echoTime; //general echoTime, usefull to have because you can set it equal to L,R,or T as done in ping function
 unsigned long leftEchoTime;
@@ -327,29 +327,29 @@ void loop()
         if (bt_3_S_TimeUp)
         {
 
-          
+
           //Drive('R');
-          
+
           frontMotor.writeMicroseconds(1700);
           backMotor.writeMicroseconds(1700);
-          
+
           Ping('L');
           delay(100);
           Ping('R');
 
           //SQUARE TO WALL
-          if (leftEchoTime > (rightEchoTime + variance)) // If left side of bot is too far from wall
+          if (leftEchoTime / 58 > (rightEchoTime / 58 + variance)) // If left side of bot is too far from wall
           {
             leftMotor.writeMicroseconds(motorStopSpeed + 200);        //Adjust position
-            //rightMotor.writeMicroseconds(1400);
+            rightMotor.writeMicroseconds(motorStopSpeed);
           }
-          else if (rightEchoTime > (leftEchoTime + variance)) //Right side of bot is too far from wall
+          else if (rightEchoTime / 58 > (leftEchoTime / 58 + variance)) //Right side of bot is too far from wall
           {
             rightMotor.writeMicroseconds(motorStopSpeed + 200);        //Adjust position
-            //leftMotor.writeMicroseconds(1400);
+            leftMotor.writeMicroseconds(motorStopSpeed);
           }
 
-          else if (rightEchoTime == leftEchoTime) //Square to wall
+          else if (rightEchoTime / 58 == leftEchoTime / 58) //Square to wall
           {
             rightMotor.writeMicroseconds(motorStopSpeed);        // do nothing
             leftMotor.writeMicroseconds(motorStopSpeed);
@@ -578,60 +578,61 @@ void Stop(int time)
  #endif
  }*/
 
-void Lift()//140 encoder counts
+void Lift()
 {
-  if(lifted=true)
-    return;
-  
-  currentEnc=encoder_LiftMotor.getPosition();
-  
-  else
+  {
+    currentEncCount = encoder_LiftMotor.getPosition();
+    if (lifted = true)
+     {return;}
+
+    else
     {
-      if(liftcounter==0)
+      if (liftcounter == 0)
       {
-         liftcounter++;
-         liftEnc=encoder_LiftMotor.getPosition();         
+        liftcounter++;
+        liftEnc = encoder_LiftMotor.getPosition();
       }
-      
-      if(currentEnc<liftEnc+20&&liftcounter==1)
+
+      if (currentEncCount < liftEnc + 20 && liftcounter == 1)
       {
         liftMotor.writeMicroseconds(1600);
         liftcounter++;
       }
-      
-      else if(currentEnc<liftEnc+40&&liftcounter==2)
+
+      else if (currentEncCount < liftEnc + 40 && liftcounter == 2)
       {
         liftMotor.writeMicroseconds(1700);
-        liftcounter++; 
+        liftcounter++;
       }
-      
-      else if(currentEnc<liftEnc+60&&liftcounter==3)
+
+      else if (currentEncCount < liftEnc + 60 && liftcounter == 3)
       {
         liftMotor.writeMicroseconds(1800);
-        liftcounter++; 
+        liftcounter++;
       }
-      
-      else if(currentEnc<liftEnc+140&&liftcounter==4)
+
+      else if (currentEncCount < liftEnc + 140 && liftcounter == 4)
       {
         liftMotor.writeMicroseconds(2000);
         liftcounter++;
       }
-      
-      else if(currentEnc>=liftEnc+140&&liftcounter==5)
+
+      else if (currentEncCount >= liftEnc + 140 && liftcounter == 5)
       {
-        liftMotor.writeMicroseconds(1500)
-        liftcounter=0; 
-        lifted=true; 
+        liftMotor.writeMicroseconds(1500);
+        liftcounter = 0;
+        lifted = true;
       }
-      
+
       else
       {
-         liftMotor.writeMicroseconds(1500); 
+        liftMotor.writeMicroseconds(1500);
       }
-      
+
     }
-      
-   return;   
+
+    return;
+  }
 }
 
 
