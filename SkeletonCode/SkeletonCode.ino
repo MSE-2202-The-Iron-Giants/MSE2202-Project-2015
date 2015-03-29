@@ -94,7 +94,7 @@ unsigned long backMotorPos;
 unsigned long leftMotorPos;
 unsigned long rightMotorPos;
 unsigned long clawMotorPos;
-long currentEncCount = 0;
+double currentEncCount = 0;
 double extendtime = 0;
 double distance = 0;
 double liftEnc = 0;
@@ -109,6 +109,7 @@ unsigned int variance = 0; //VARIANCE
 unsigned int modeIndex = 0;
 unsigned int stageIndex = 0;
 unsigned int liftcounter = 0;
+unsigned int updown=0;
 
 unsigned long ul_3_S_Timer = 0;
 
@@ -125,7 +126,8 @@ void Drive(char Direction = 'F', int Speed = 300);
 void Slide(String Direction = "FL", int Speed = 300);
 void Turn(char);
 void Turn90(char);
-void Lift(int);
+void Lift();
+void Drop();
 void Extend();
 void ExtendDist(double);
 void Retract();
@@ -136,6 +138,7 @@ void Search();
 void Drive_Distance(char side, int Speed, float distance);
 void Lift2();
 void TestMotors();
+
 
 
 void DebugEncoders();
@@ -221,8 +224,8 @@ void setup()
 
 void loop()
 {
-  Serial.print("Mode: ");
-  Serial.println(modeIndex);
+//  Serial.print("Mode: ");
+//  Serial.println(modeIndex);
   if ((millis() - ul_3_S_Timer) > 3000)
   {
     bt_3_S_TimeUp = true;
@@ -341,85 +344,32 @@ void loop()
       }
 
     case 3:    // after 3 seconds
-      {
-        if (bt_3_S_TimeUp)
+     {
+       if (bt_3_S_TimeUp)
         {
-
-          currentEncCount = encoder_LiftMotor.getPosition();
-          Serial.println(currentEncCount);
-          Serial.println(liftEnc);
-          Serial.print("liftcounter :");
-          Serial.println(liftcounter);
-
-          if (lifted == true)
-          {
-            return;
-          }
-
-          else
-
-          {
-
-            liftMotor.writeMicroseconds(1800);
-            if (liftcounter == 0)
-            {
-              liftcounter = 1;
-              liftEnc = encoder_LiftMotor.getPosition();
-              liftMotor.writeMicroseconds(1800);
-            }
-
-
-            else if (currentEncCount >= 0)// liftEnc + 20 && liftcounter == 1)
-
-            {
-              liftMotor.writeMicroseconds(1800);
-              liftcounter = 2;
-            }
-
-
-            else if (currentEncCount >= liftEnc + 20) // 40 && liftcounter == 2)
-
-            {
-              liftMotor.writeMicroseconds(1900);
-              liftcounter = 3;
-            }
-
-
-            else if (currentEncCount >= liftEnc + 40)// && liftcounter == 3)
-
-            {
-              liftMotor.writeMicroseconds(1900);
-              liftcounter = 4;
-            }
-
-
-            else if (currentEncCount >= liftEnc + 60)// && liftcounter == 4)
-            {
-
-              liftMotor.writeMicroseconds(2000);
-              liftcounter = 5;
-            }
-
-            else if (currentEncCount >= liftEnc + 135)// && liftcounter == 5)
-            {
-              liftMotor.writeMicroseconds(1500);
-              liftcounter = 0;
-              lifted = true;
-            }
-
-
-            else
-            {
-              liftMotor.writeMicroseconds(1500);
-            }
-          }
-
+          if(updown==0){
+            Serial.println("Entered");
+           while(lifted==false)
+           {
+              Lift(); 
+           }
+           
+           Serial.println("Drop dat ass");
+           
+           while(lifted==true)
+           {
+              Drop(); 
+           }
+           
+           updown++;
+           Serial.println(updown);
         }
-
-
+          
+        }
 
         break;
       }
+
 
     case 4:    //after 3 seconds.
       {
@@ -432,18 +382,19 @@ void loop()
         break;
       }
 
+
     case 5:
       {
         Serial.print(digitalRead(ci_BumperSwitch));
 
-        //   if(digitalRead(ci_BumperSwitch)==LOW)
-        { Lift2();
-          //  liftMotor.writeMicroseconds(1876);
-        }
-        //    { Belt("run");
-        //    }
-        //    else
-        //    {Belt("stop");}
+           if(digitalRead(ci_BumperSwitch)==LOW)
+//        {
+//            liftMotor.writeMicroseconds(1876);
+//        }
+            { Belt("run");
+            }
+          else
+          {Belt("stop");}
         //    else
         //    {liftMotor.writeMicroseconds(1500);}
 
@@ -642,17 +593,11 @@ void Stop(int time)
  #endif
  }*/
 
-void Lift()
+void Lift()//this function was a bitch to make. the gear system is extremely finicky and anything much higher than the speeds below lock them right up. 
+           //also, this function needs to be implemented in the main code within a while loop to ensure that it isnt already lifted. gods speed
 {
 
-
   currentEncCount = encoder_LiftMotor.getPosition();
-  if (lifted = true)
-  {
-    return;
-  }
-
-  else
 
   {
     if (liftcounter == 0)
@@ -662,56 +607,65 @@ void Lift()
     }
 
 
-    if (currentEncCount < liftEnc + 20 && liftcounter == 1)
-
+    if(liftcounter==1)
     {
-      liftMotor.writeMicroseconds(1800);
-      liftcounter++;
-    }
-
-
-    //      else if (currentEncCount < liftEnc + 40 && liftcounter == 2)
-    //
-    //      {
-    //        liftMotor.writeMicroseconds(1700);
-    //        liftcounter++;
-    //      }
-    //
-    //
-    else if (currentEncCount < liftEnc + 50 && liftcounter == 2)
-
+        liftMotor.writeMicroseconds(1776);//1776 is a sweet spot.
+        liftcounter++;
+        
+        while(currentEncCount<liftEnc+132.5)//this while loop is basically a delay based off of encoder counts instead of time.
+          {
+            currentEncCount = encoder_LiftMotor.getPosition();
+            Serial.println(currentEncCount);
+          }
+    }   
+    
+    else if (currentEncCount >= liftEnc + 132.5 && liftcounter == 2 )
     {
-      liftMotor.writeMicroseconds(1900);
-      liftcounter++;
-    }
-
-
-    else if (currentEncCount < liftEnc + 140 && liftcounter == 4)
-
-    {
-      liftMotor.writeMicroseconds(2000);
-      liftcounter++;
-    }
-
-
-    else if (currentEncCount >= liftEnc + 140 && liftcounter == 5)
-    {
+      Serial.println("Brake");
       liftMotor.writeMicroseconds(1500);
       liftcounter = 0;
       lifted = true;
-
     }
-
-    else
-    {
-      liftMotor.writeMicroseconds(1500);
-    }
-
   }
 
   return;
-
 }
+
+void Drop()
+{
+  
+  {
+    if (liftcounter == 0)
+    {
+      liftcounter++;
+      liftEnc = encoder_LiftMotor.getPosition();
+    }
+
+    if(liftcounter==1)
+    {
+        liftMotor.writeMicroseconds(1000);
+        liftcounter++;
+        
+        while(0 > liftEnc-120)//this while loop is basically a delay based off of encoder counts instead of time.
+          {
+            currentEncCount = encoder_LiftMotor.getPosition();
+            Serial.println(currentEncCount);
+          }
+          
+         delay(500); 
+    }   
+    
+    else if (0 >= liftEnc - 120 && liftcounter == 2 )
+    {
+      Serial.println("Brake");
+      liftMotor.writeMicroseconds(1500);
+      liftcounter = 0;
+      lifted = false;
+    }
+  }
+
+  return;
+} 
 
 
 void ExtendDist(double distance)
@@ -864,33 +818,6 @@ void DebugEncoders() {
 }
 
 
-void Lift2()
-{
-  currentEncCount = encoder_LiftMotor.getPosition();
-  int Speed = 1776;
-
-  liftMotor.writeMicroseconds(Speed);
-  delay(800);
-  liftMotor.writeMicroseconds(1900);
-  delay(1000);
-  liftMotor.writeMicroseconds(2000);
-  delay(4000);
-
-  //while(currentEncCount<138)
-  //    {currentEncCount = encoder_LiftMotor.getPosition();
-  //    if(Speed==2000){Speed=1995;}
-  //    liftMotor.writeMicroseconds(Speed);}
-
-
-  //  for(currentEncCount; currentEncCount<140; Speed+=1)
-  //  {
-  //    currentEncCount = encoder_LiftMotor.getPosition();
-  //    if(Speed==2000){Speed=1995;}
-  //    liftMotor.writeMicroseconds(Speed);
-  //    //delay(100);
-  //
-  //  }
-}
 
 void TestMotors()
 {
