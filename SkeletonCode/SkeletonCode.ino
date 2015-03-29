@@ -135,7 +135,7 @@ void Square();
 void Search();
 void Drive_Distance(char side, int Speed, float distance);
 void Lift2();
-
+void TestMotors();
 
 
 void DebugEncoders();
@@ -197,9 +197,9 @@ void setup()
   pinMode(ci_MotorEnableSwitch, INPUT);
   pinMode(ci_ModeButton, INPUT);
   digitalWrite(ci_ModeButton, HIGH); //enables internal pullup resistor (button pushed = LOW)
-  
-  pinMode(ci_BumperSwitch,INPUT);
-  digitalWrite(ci_BumperSwitch,HIGH);
+
+  pinMode(ci_BumperSwitch, INPUT);
+  digitalWrite(ci_BumperSwitch, HIGH);
 
   //have to initiate I2C motors in the order they are attached starting at the Aurdino
   encoder_LeftMotor.init((25.93384736) * (1.0 / 3.0)*MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
@@ -279,38 +279,8 @@ void loop()
 
             case 0:
               {
-                Drive('F');
-                delay(1000);
-                Stop();
-                delay(700);
-                Drive('R');
-                delay(1000);
-                Stop();
-                delay(700);
-                Drive('B');
-                delay(1000);
-                Stop();
-                delay(700);
-                Drive('L');
-                delay(1000);
-                Stop();
-                delay(700);
-                Slide("FL");
-                delay(1000);
-                Stop();
-                delay(700);
-                Slide("FR");
-                delay(1000);
-                Stop();
-                delay(700);
-                Slide("BR");
-                delay(1000);
-                Stop();
-                delay(700);
-                Slide("BL");
-                delay(1000);
-                Stop();
-                delay(700);
+                Drive('F',500);
+
 
 
                 break; //remeber if you dont put this it will just go into the next case once current case is completed
@@ -343,21 +313,21 @@ void loop()
           Ping('R');
 
           //SQUARE TO WALL
-          if (leftEchoTime / 58 > (rightEchoTime / 58 + variance) && leftEchoTime/58 > 30) // If left side of bot is too far from wall
+          if (leftEchoTime / 58 > (rightEchoTime / 58 + variance) && leftEchoTime / 58 > 40) // If left side of bot is too far from wall
           {
-            leftMotor.writeMicroseconds(motorStopSpeed + 200);        //Adjust position
+            leftMotor.writeMicroseconds(motorStopSpeed + 100);        //Adjust position
             rightMotor.writeMicroseconds(motorStopSpeed);
           }
-          else if (rightEchoTime / 58 > (leftEchoTime / 58 + variance) && rightEchoTime/58 > 30) //Right side of bot is too far from wall
+          else if (rightEchoTime / 58 > (leftEchoTime / 58 + variance) && rightEchoTime / 58 > 40) //Right side of bot is too far from wall
           {
-            rightMotor.writeMicroseconds(motorStopSpeed + 200);        //Adjust position
+            rightMotor.writeMicroseconds(motorStopSpeed + 100);        //Adjust position
             leftMotor.writeMicroseconds(motorStopSpeed);
           }
-          
-          else if( rightEchoTime/58 < 30 || leftEchoTime/58 <30)
+
+          else if ( rightEchoTime / 58 < 30 || leftEchoTime / 58 < 40)
           {
-            rightMotor.writeMicroseconds(motorStopSpeed - 200);
-            leftMotor.writeMicroseconds(motorStopSpeed - 200);
+            rightMotor.writeMicroseconds(motorStopSpeed - 100);
+            leftMotor.writeMicroseconds(motorStopSpeed - 100);
           }
 
           else if (rightEchoTime / 58 == leftEchoTime / 58) //Square to wall
@@ -446,40 +416,40 @@ void loop()
 
         }
 
-      
 
-      break;
+
+        break;
+      }
+
+    case 4:    //after 3 seconds.
+      {
+        if (bt_3_S_TimeUp)
+        {
+          liftMotor.writeMicroseconds(1900);
+
+        }
+
+        break;
+      }
+
+    case 5:
+      {
+        Serial.print(digitalRead(ci_BumperSwitch));
+
+        //   if(digitalRead(ci_BumperSwitch)==LOW)
+        { Lift2();
+          //  liftMotor.writeMicroseconds(1876);
+        }
+        //    { Belt("run");
+        //    }
+        //    else
+        //    {Belt("stop");}
+        //    else
+        //    {liftMotor.writeMicroseconds(1500);}
+
+
+      }
   }
-
-case 4:    //after 3 seconds.
-  {
-    if (bt_3_S_TimeUp)
-    {
-      liftMotor.writeMicroseconds(1900);
-
-    }
-
-    break;
-  }
-  
-  case 5:
-  {
-    Serial.print(digitalRead(ci_BumperSwitch));
-    
- //   if(digitalRead(ci_BumperSwitch)==LOW)
-    { Lift2();
-  //  liftMotor.writeMicroseconds(1876);
-    }
-//    { Belt("run");
-//    }
-//    else
-//    {Belt("stop");}
-//    else
-//    {liftMotor.writeMicroseconds(1500);}
-    
-    
-  }
-}
 }
 
 //**************end of void loop() **************************************************************************************************************************************
@@ -896,30 +866,64 @@ void DebugEncoders() {
 
 void Lift2()
 {
-currentEncCount = encoder_LiftMotor.getPosition();
-int Speed=1776;
+  currentEncCount = encoder_LiftMotor.getPosition();
+  int Speed = 1776;
 
-liftMotor.writeMicroseconds(Speed);
-delay(800);
-liftMotor.writeMicroseconds(1900);
-delay(1000);
-liftMotor.writeMicroseconds(2000);
-delay(4000);
+  liftMotor.writeMicroseconds(Speed);
+  delay(800);
+  liftMotor.writeMicroseconds(1900);
+  delay(1000);
+  liftMotor.writeMicroseconds(2000);
+  delay(4000);
 
-//while(currentEncCount<138)
-//    {currentEncCount = encoder_LiftMotor.getPosition();
-//    if(Speed==2000){Speed=1995;}
-//    liftMotor.writeMicroseconds(Speed);}
+  //while(currentEncCount<138)
+  //    {currentEncCount = encoder_LiftMotor.getPosition();
+  //    if(Speed==2000){Speed=1995;}
+  //    liftMotor.writeMicroseconds(Speed);}
 
 
-//  for(currentEncCount; currentEncCount<140; Speed+=1)
-//  {
-//    currentEncCount = encoder_LiftMotor.getPosition();
-//    if(Speed==2000){Speed=1995;}
-//    liftMotor.writeMicroseconds(Speed);
-//    //delay(100);
-//    
-//  }
-  
-  
+  //  for(currentEncCount; currentEncCount<140; Speed+=1)
+  //  {
+  //    currentEncCount = encoder_LiftMotor.getPosition();
+  //    if(Speed==2000){Speed=1995;}
+  //    liftMotor.writeMicroseconds(Speed);
+  //    //delay(100);
+  //
+  //  }
+}
+
+void TestMotors()
+{
+  Drive('F');
+  delay(1000);
+  Stop();
+  delay(700);
+  Drive('R');
+  delay(1000);
+  Stop();
+  delay(700);
+  Drive('B');
+  delay(1000);
+  Stop();
+  delay(700);
+  Drive('L');
+  delay(1000);
+  Stop();
+  delay(700);
+  Slide("FL");
+  delay(1000);
+  Stop();
+  delay(700);
+  Slide("FR");
+  delay(1000);
+  Stop();
+  delay(700);
+  Slide("BR");
+  delay(1000);
+  Stop();
+  delay(700);
+  Slide("BL");
+  delay(1000);
+  Stop();
+  delay(700);
 }
