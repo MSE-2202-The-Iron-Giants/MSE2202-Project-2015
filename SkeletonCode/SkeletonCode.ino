@@ -18,7 +18,7 @@ make variable that holds value of wheel speed
 
 
 //*******uncoment to debug******
-#define DEBUG_ULTRASONIC
+//#define DEBUG_ULTRASONIC
 //#define DEBUG_ENCODERS
 
 
@@ -104,7 +104,7 @@ unsigned long leftEchoTime;
 unsigned long rightEchoTime;
 unsigned long topEchoTime;
 
-unsigned int variance = 1; //VARIANCE
+unsigned int variance = 0; //VARIANCE
 
 unsigned int modeIndex = 0;
 unsigned int stageIndex = 0;
